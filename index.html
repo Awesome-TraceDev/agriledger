@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriLedger AI — Farm Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --g900:#0a1f08;--g800:#162f0b;--g700:#214010;--g600:#2f5a14;--g500:#4a7d1f;--g400:#72a63c;--g300:#a3c870;--g200:#cce09e;--g100:#e8f3d4;--g50:#f4f9ec;
+  --a600:#7a4400;--a400:#c97c1a;--a100:#fdecd0;
+  --r600:#8b1e1e;--r400:#c94040;--r100:#fde8e8;
+  --t600:#0a5c47;--t100:#d6f0e8;
+  --br600:#5c3010;--br100:#f5e8da;
+  --bg:#f0f4e8;--surf:#ffffff;--surf2:#f8faf2;--bord:#dce8c4;--bord2:#e8f0d4;
+  --tx1:#0d1f08;--tx2:#2d4a1a;--tx3:#5a7a42;--tx4:#8aaa6a;
+  --font-display:'Lora',Georgia,serif;
+  --font-body:'Outfit',system-ui,sans-serif;
+  --r4:4px;--r8:8px;--r12:12px;--r16:16px;--r24:24px;
+  --shadow-sm:0 1px 3px rgba(10,31,8,0.08);
+  --shadow-md:0 4px 16px rgba(10,31,8,0.10);
+  --shadow-lg:0 8px 40px rgba(10,31,8,0.14);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:var(--font-body);background:var(--bg);color:var(--tx1);font-size:14px;line-height:1.5;}
+
+/* ── LAYOUT ── */
+.shell{display:flex;height:100vh;overflow:hidden;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:232px;background:var(--g900);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;scrollbar-width:none;}
+.sidebar::-webkit-scrollbar{display:none;}
+.s-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,0.07);}
+.s-logo-text{font-family:var(--font-display);font-size:18px;color:#fff;letter-spacing:-0.01em;}
+.s-logo-sub{font-size:10px;color:var(--g300);letter-spacing:0.12em;text-transform:uppercase;margin-top:1px;}
+.s-section{padding:16px 14px 3px;font-size:9.5px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.28);font-weight:600;}
+.s-group{margin:2px 8px;}
+.s-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r8);cursor:pointer;color:rgba(255,255,255,0.58);font-size:13px;font-weight:400;transition:all 0.13s;user-select:none;position:relative;}
+.s-item i{font-size:16px;flex-shrink:0;opacity:0.8;}
+.s-item:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.88);}
+.s-item.active{background:var(--g700);color:#fff;font-weight:500;}
+.s-item.active i{opacity:1;}
+.s-item .pill{margin-left:auto;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600;}
+.pill-green{background:var(--g500);color:#fff;}
+.pill-red{background:var(--r400);color:#fff;}
+/* Sub-menu */
+.s-sub{overflow:hidden;max-height:0;transition:max-height 0.25s ease;}
+.s-sub.open{max-height:400px;}
+.s-sub-item{display:flex;align-items:center;gap:8px;padding:7px 10px 7px 32px;border-radius:var(--r8);cursor:pointer;color:rgba(255,255,255,0.48);font-size:12.5px;transition:all 0.13s;margin:1px 0;}
+.s-sub-item:hover{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.78);}
+.s-sub-item.active{color:var(--g300);font-weight:500;}
+.s-chevron{margin-left:auto;font-size:12px;transition:transform 0.2s;}
+.s-item.open .s-chevron{transform:rotate(90deg);}
+.s-footer{margin-top:auto;padding:12px 10px;border-top:1px solid rgba(255,255,255,0.07);}
+.farm-chip{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,0.06);border-radius:var(--r8);}
+.farm-av{width:28px;height:28px;background:var(--g600);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{height:56px;background:var(--surf);border-bottom:1px solid var(--bord);display:flex;align-items:center;padding:0 22px;gap:12px;flex-shrink:0;box-shadow:var(--shadow-sm);}
+.topbar-title{font-family:var(--font-display);font-size:18px;color:var(--tx1);flex:1;font-weight:400;}
+.topbar-title span{font-size:12px;color:var(--tx4);font-family:var(--font-body);font-weight:400;margin-left:8px;}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--r8);border:1px solid var(--bord);background:var(--surf);color:var(--tx2);font-family:var(--font-body);font-size:12.5px;cursor:pointer;font-weight:500;transition:all 0.13s;}
+.btn:hover{background:var(--g50);border-color:var(--g400);}
+.btn-primary{background:var(--g700);color:#fff;border-color:var(--g700);}
+.btn-primary:hover{background:var(--g600);}
+.btn-sm{padding:5px 10px;font-size:12px;}
+.btn i{font-size:14px;}
+.content{flex:1;overflow-y:auto;padding:20px 22px;}
+
+/* ── PANELS ── */
+.panel{display:none;animation:fadeIn 0.18s ease;}
+.panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── CARDS ── */
+.card{background:var(--surf);border:1px solid var(--bord);border-radius:var(--r16);padding:16px 18px;box-shadow:var(--shadow-sm);}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.card-title{font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.08em;}
+.card-action{font-size:12px;color:var(--g600);cursor:pointer;font-weight:500;}
+.card-action:hover{text-decoration:underline;}
+
+/* ── STAT CARDS ── */
+.stat-card{background:var(--surf);border:1px solid var(--bord);border-radius:var(--r16);padding:16px 18px;box-shadow:var(--shadow-sm);}
+.stat-lbl{font-size:10px;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--tx4);margin-bottom:4px;}
+.stat-val{font-family:var(--font-display);font-size:24px;color:var(--tx1);line-height:1.1;}
+.stat-sub{font-size:11px;color:var(--tx4);margin-top:3px;}
+.stat-trend{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:5px;}
+.up{background:var(--g100);color:var(--g700);}
+.dn{background:var(--r100);color:var(--r600);}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:700;}
+.bg{background:var(--g100);color:var(--g700);}
+.ba{background:var(--a100);color:var(--a600);}
+.br{background:var(--r100);color:var(--r600);}
+.bt{background:var(--t100);color:var(--t600);}
+.bx{background:#f0ede6;color:#5a5040;}
+.bb{background:var(--br100);color:var(--br600);}
+
+/* ── TABLES ── */
+table{width:100%;border-collapse:collapse;}
+th{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--tx4);padding:8px 12px;text-align:left;border-bottom:1px solid var(--bord);background:var(--surf2);}
+td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--bord2);color:var(--tx1);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--g50);}
+.tbl-wrap{border-radius:var(--r12);overflow:hidden;border:1px solid var(--bord);}
+
+/* ── FORMS ── */
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.fg label{font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.06em;}
+.fg input,.fg select,.fg textarea{padding:8px 11px;border:1px solid var(--bord);border-radius:var(--r8);font-family:var(--font-body);font-size:13px;color:var(--tx1);background:var(--surf);outline:none;transition:border 0.13s;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--g500);box-shadow:0 0 0 3px rgba(74,125,31,0.08);}
+.fg textarea{resize:vertical;min-height:70px;}
+.fr{display:grid;gap:10px;margin-bottom:10px;}
+.fr-2{grid-template-columns:1fr 1fr;}
+.fr-3{grid-template-columns:1fr 1fr 1fr;}
+
+/* ── ALERTS ── */
+.alert{padding:10px 13px;border-radius:var(--r8);display:flex;align-items:flex-start;gap:9px;font-size:12.5px;margin-bottom:10px;}
+.alert-warn{background:var(--a100);border-left:3px solid var(--a400);color:var(--a600);}
+.alert-ok{background:var(--g100);border-left:3px solid var(--g400);color:var(--g700);}
+.alert-err{background:var(--r100);border-left:3px solid var(--r400);color:var(--r600);}
+.alert-br{background:var(--br100);border-left:3px solid var(--br600);color:var(--br600);}
+.alert i{font-size:15px;flex-shrink:0;margin-top:1px;}
+
+/* ── PROGRESS ── */
+.pb{height:5px;background:var(--bord);border-radius:3px;overflow:hidden;}
+.pf{height:100%;border-radius:3px;background:var(--g500);transition:width .4s;}
+
+/* ── SECTION HEAD ── */
+.pg-title{font-family:var(--font-display);font-size:20px;color:var(--tx1);margin-bottom:3px;font-weight:600;}
+.pg-sub{font-size:12.5px;color:var(--tx4);margin-bottom:18px;}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(10,31,8,0.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity 0.18s;}
+.modal-bg.open{opacity:1;pointer-events:all;}
+.modal{background:var(--surf);border-radius:var(--r24);padding:24px 26px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);transform:scale(0.96);transition:transform 0.18s;}
+.modal-bg.open .modal{transform:scale(1);}
+.modal-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;}
+.modal-title{font-family:var(--font-display);font-size:18px;color:var(--tx1);}
+.modal-close{width:30px;height:30px;border-radius:var(--r8);border:1px solid var(--bord);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--tx3);transition:all 0.13s;}
+.modal-close:hover{background:var(--r100);border-color:var(--r400);color:var(--r600);}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;padding-top:16px;border-top:1px solid var(--bord);}
+
+/* ── UNIT TOGGLE ── */
+.unit-toggle{display:flex;gap:6px;margin-bottom:10px;}
+.unit-btn{padding:5px 12px;border-radius:20px;border:1px solid var(--bord);background:transparent;font-family:var(--font-body);font-size:12px;cursor:pointer;color:var(--tx3);transition:all 0.13s;}
+.unit-btn.active{background:var(--g700);color:#fff;border-color:var(--g700);}
+
+/* ── RESULT BOX ── */
+.rbox{background:var(--g50);border:1px solid var(--g200);border-radius:var(--r12);padding:14px 16px;margin-top:12px;}
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.ri{text-align:center;}
+.rn{font-family:var(--font-display);font-size:20px;color:var(--g700);}
+.rl{font-size:10.5px;color:var(--tx4);margin-top:2px;}
+
+/* ── AI CALC SPECIFIC ── */
+.ai-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:linear-gradient(135deg,var(--g700),var(--g500));color:#fff;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:12px;}
+.ai-result{background:linear-gradient(135deg,var(--g50),#f0f8e8);border:1px solid var(--g200);border-radius:var(--r12);padding:14px 16px;margin-top:12px;}
+.ai-loading{display:flex;align-items:center;gap:8px;color:var(--tx3);font-size:13px;}
+.dot-pulse span{width:6px;height:6px;background:var(--g500);border-radius:50%;display:inline-block;margin:0 2px;animation:pulse 1.2s infinite;}
+.dot-pulse span:nth-child(2){animation-delay:.2s;}
+.dot-pulse span:nth-child(3){animation-delay:.4s;}
+@keyframes pulse{0%,80%,100%{transform:scale(0);opacity:.3;}40%{transform:scale(1);opacity:1;}}
+
+/* ── CHAT ── */
+.chat-wrap{display:flex;flex-direction:column;height:480px;}
+.chat-msgs{flex:1;overflow-y:auto;padding:4px 0;display:flex;flex-direction:column;gap:10px;margin-bottom:12px;}
+.msg{display:flex;gap:8px;}
+.msg-av{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.msg-ai .msg-av{background:var(--g700);color:#fff;}
+.msg-user .msg-av{background:var(--g100);color:var(--g700);}
+.msg-user{flex-direction:row-reverse;}
+.bubble{max-width:76%;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.55;}
+.msg-ai .bubble{background:var(--g50);border:1px solid var(--g200);}
+.msg-user .bubble{background:var(--g700);color:#fff;}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.chip{padding:4px 10px;border:1px solid var(--bord);border-radius:20px;font-size:11.5px;cursor:pointer;color:var(--tx3);transition:all 0.12s;}
+.chip:hover{border-color:var(--g500);background:var(--g50);color:var(--g600);}
+.chat-input{display:flex;gap:7px;}
+.chat-input input{flex:1;}
+
+/* ── WEATHER WIDGET ── */
+.weather-strip{background:linear-gradient(135deg,var(--g800),var(--g600));border-radius:var(--r12);padding:12px 16px;color:#fff;display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.weather-temp{font-family:var(--font-display);font-size:28px;}
+.weather-info{flex:1;}
+.weather-label{font-size:11px;opacity:0.7;text-transform:uppercase;letter-spacing:.08em;}
+.weather-val{font-size:13px;font-weight:500;}
+.weather-icon{font-size:36px;opacity:.9;}
+
+/* ── MISC ── */
+hr{border:none;border-top:1px solid var(--bord);margin:12px 0;}
+.sep{height:14px;}
+.link{color:var(--g600);cursor:pointer;font-size:12px;font-weight:500;}
+.link:hover{text-decoration:underline;}
+.empty{text-align:center;padding:32px;color:var(--tx4);font-size:13px;}
+
+@media(max-width:860px){.sidebar{display:none;}.g4{grid-template-columns:1fr 1fr;}.g3{grid-template-columns:1fr 1fr;}.g2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ══ SIDEBAR ══ -->
+<nav class="sidebar">
+  <div class="s-logo">
+    <div class="s-logo-text">AgriLedger AI</div>
+    <div class="s-logo-sub">Farm Intelligence</div>
+  </div>
+
+  <div class="s-section">Overview</div>
+  <div class="s-group">
+    <div class="s-item active" onclick="nav('overview',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+    <div class="s-item" onclick="nav('agronomist',this)"><i class="ti ti-robot"></i> AI Agronomist</div>
+    <div class="s-item" onclick="nav('weather',this)"><i class="ti ti-cloud-rain"></i> Weather & Season</div>
+  </div>
+
+  <div class="s-section">Crops</div>
+  <div class="s-group">
+    <div class="s-item" onclick="toggleSub('sub-crops',this)"><i class="ti ti-plant-2"></i> Crop Management <i class="ti ti-chevron-right s-chevron"></i></div>
+    <div class="s-sub" id="sub-crops">
+      <div class="s-sub-item" onclick="nav('crop-blocks',this)"><i class="ti ti-map-2"></i> Farm Blocks</div>
+      <div class="s-sub-item" onclick="nav('crop-cycles',this)"><i class="ti ti-rotate-clockwise"></i> Crop Cycles</div>
+      <div class="s-sub-item" onclick="nav('crop-calc',this)"><i class="ti ti-calculator"></i> AI Calculator</div>
+      <div class="s-sub-item" onclick="nav('crop-spray',this)"><i class="ti ti-droplet"></i> Spray Schedule</div>
+      <div class="s-sub-item" onclick="nav('crop-scanner',this)"><i class="ti ti-scan"></i> Leaf Scanner <span class="pill pill-red" style="font-size:9px;padding:1px 5px;">3</span></div>
+      <div class="s-sub-item" onclick="nav('crop-harvest',this)"><i class="ti ti-basket"></i> Harvest Log</div>
+      <div class="s-sub-item" onclick="nav('crop-soil',this)"><i class="ti ti-file-analytics"></i> Soil Reports</div>
+    </div>
+  </div>
+
+  <div class="s-section">Livestock</div>
+  <div class="s-group">
+    <div class="s-item" onclick="toggleSub('sub-lv',this)"><i class="ti ti-horse"></i> Livestock <span class="pill pill-red">2</span> <i class="ti ti-chevron-right s-chevron"></i></div>
+    <div class="s-sub" id="sub-lv">
+      <div class="s-sub-item" onclick="nav('lv-herd',this)"><i class="ti ti-list-details"></i> Herd Register</div>
+      <div class="s-sub-item" onclick="nav('lv-health',this)"><i class="ti ti-stethoscope"></i> Health & Vaccines</div>
+      <div class="s-sub-item" onclick="nav('lv-feed',this)"><i class="ti ti-wheat"></i> Feed & Nutrition</div>
+      <div class="s-sub-item" onclick="nav('lv-prod',this)"><i class="ti ti-egg"></i> Production</div>
+      <div class="s-sub-item" onclick="nav('lv-breeding',this)"><i class="ti ti-heart"></i> Breeding</div>
+      <div class="s-sub-item" onclick="nav('lv-sales',this)"><i class="ti ti-pig-money"></i> Livestock Sales</div>
+    </div>
+  </div>
+
+  <div class="s-section">Business</div>
+  <div class="s-group">
+    <div class="s-item" onclick="toggleSub('sub-acc',this)"><i class="ti ti-chart-pie"></i> Accounts <i class="ti ti-chevron-right s-chevron"></i></div>
+    <div class="s-sub" id="sub-acc">
+      <div class="s-sub-item" onclick="nav('acc-ledger',this)"><i class="ti ti-receipt"></i> Ledger</div>
+      <div class="s-sub-item" onclick="nav('acc-income',this)"><i class="ti ti-trending-up"></i> Income</div>
+      <div class="s-sub-item" onclick="nav('acc-expenses',this)"><i class="ti ti-trending-down"></i> Expenses</div>
+      <div class="s-sub-item" onclick="nav('acc-pl',this)"><i class="ti ti-file-dollar"></i> P&L Report</div>
+      <div class="s-sub-item" onclick="nav('acc-budget',this)"><i class="ti ti-target"></i> Budget vs Actual</div>
+    </div>
+  </div>
+  <div class="s-group">
+    <div class="s-item" onclick="toggleSub('sub-stock',this)"><i class="ti ti-package"></i> Stock & Inputs <i class="ti ti-chevron-right s-chevron"></i></div>
+    <div class="s-sub" id="sub-stock">
+      <div class="s-sub-item" onclick="nav('stock-all',this)"><i class="ti ti-boxes"></i> All Inventory</div>
+      <div class="s-sub-item" onclick="nav('stock-chem',this)"><i class="ti ti-flask"></i> Chemicals</div>
+      <div class="s-sub-item" onclick="nav('stock-fert',this)"><i class="ti ti-leaf"></i> Fertilisers</div>
+      <div class="s-sub-item" onclick="nav('stock-feed',this)"><i class="ti ti-bowl"></i> Livestock Feed</div>
+      <div class="s-sub-item" onclick="nav('stock-equip',this)"><i class="ti ti-tools"></i> Equipment</div>
+    </div>
+  </div>
+  <div class="s-group">
+    <div class="s-item" onclick="nav('orders',this)"><i class="ti ti-truck"></i> Orders <span class="pill pill-green">2</span></div>
+    <div class="s-item" onclick="nav('payroll',this)"><i class="ti ti-users"></i> Payroll</div>
+    <div class="s-item" onclick="nav('market',this)"><i class="ti ti-building-store"></i> Market Prices</div>
+  </div>
+
+  <div class="s-footer">
+    <div class="farm-chip">
+      <div class="farm-av">MF</div>
+      <div><div style="font-size:12px;color:#fff;font-weight:500;">Mutale Farm</div><div style="font-size:10px;color:var(--g300);">Pro · Lusaka, ZM</div></div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Dashboard <span id="topbar-sub">Mixed farm · Season week 14</span></div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn btn-sm" onclick="openModal('modal-quick-entry')"><i class="ti ti-plus"></i> Quick Log</button>
+      <button class="btn btn-primary btn-sm" onclick="nav('agronomist',null)"><i class="ti ti-robot"></i> Ask AI</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="panel active" id="panel-overview">
+      <div class="weather-strip">
+        <div class="weather-icon">⛅</div>
+        <div class="weather-info">
+          <div class="weather-label">Lusaka · Today · Tuesday 19 May 2026</div>
+          <div style="display:flex;gap:18px;margin-top:4px;">
+            <div><div class="weather-label">Temperature</div><div class="weather-val">24°C / 14°C</div></div>
+            <div><div class="weather-label">Humidity</div><div class="weather-val">72% — high</div></div>
+            <div><div class="weather-label">Rainfall</div><div class="weather-val">8mm forecast Thu</div></div>
+            <div><div class="weather-label">Advisory</div><div class="weather-val">Spray before Thursday</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-err"><i class="ti ti-alert-triangle"></i><div><strong>Spray overdue:</strong> Block A fungicide (Mancozeb 2g/L) — 3 days late. Apply today before Thursday rain.</div></div>
+      <div class="alert alert-br"><i class="ti ti-stethoscope"></i><div><strong>Livestock:</strong> 2 goats (GT-008, GT-009) showing respiratory symptoms. Isolate + treat. FMD vaccine due for cattle.</div></div>
+
+      <div class="g4" style="margin-bottom:14px;">
+        <div class="stat-card"><div class="stat-lbl">Season Revenue</div><div class="stat-val">ZMW 52,600</div><div class="stat-sub">Crops + Livestock</div><div class="stat-trend up"><i class="ti ti-trending-up"></i>+18% vs last</div></div>
+        <div class="stat-card"><div class="stat-lbl">Net Profit</div><div class="stat-val">ZMW 29,760</div><div class="stat-sub">57% margin</div><div class="stat-trend up"><i class="ti ti-trending-up"></i>+4pts</div></div>
+        <div class="stat-card"><div class="stat-lbl">Total Livestock</div><div class="stat-val">127 head</div><div class="stat-sub">4 species · ZMW 84,000 est.</div></div>
+        <div class="stat-card"><div class="stat-lbl">Payroll Due</div><div class="stat-val" style="color:var(--r600);">ZMW 14,640</div><div class="stat-sub">Friday 23 May</div></div>
+      </div>
+
+      <div class="g2" style="margin-bottom:14px;">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Revenue vs Expenses 2025</span></div>
+          <canvas id="ch-overview" height="170"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Active Crop Cycles</span><span class="card-action" onclick="nav('crop-cycles',null)">View all</span></div>
+          <div class="tbl-wrap">
+            <table><thead><tr><th>Block</th><th>Crop</th><th>Stage</th><th>Days left</th><th>Yield unit</th></tr></thead><tbody>
+              <tr><td>Block A</td><td>Tomato</td><td><span class="badge bt">Field</span></td><td>38</td><td>Crates (30kg)</td></tr>
+              <tr><td>Block B</td><td>Cabbage</td><td><span class="badge bt">Field</span></td><td>22</td><td>Bags (50kg)</td></tr>
+              <tr><td>Block C</td><td>Pepper</td><td><span class="badge ba">Nursery</span></td><td>51</td><td>Kg</td></tr>
+              <tr><td>Block D</td><td>Onion</td><td><span class="badge bg">Harvest</span></td><td>0</td><td>Bags (25kg)</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <div class="g3">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Pending Orders</span><span class="card-action" onclick="nav('orders',null)">View</span></div>
+          <div style="display:flex;flex-direction:column;gap:9px;font-size:13px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bord2);"><div><div style="font-weight:600;">Nakumatt — Tomato</div><div style="font-size:11px;color:var(--tx4);">200 crates · Thu 22 May</div></div><span class="badge ba">Packing</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bord2);"><div><div style="font-weight:600;">City Market — Cabbage</div><div style="font-size:11px;color:var(--tx4);">80 bags · Fri 23 May</div></div><span class="badge bg">Ready</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;"><div><div style="font-weight:600;">Butcher — Goat ×3</div><div style="font-size:11px;color:var(--tx4);">ZMW 2,700 · Sat</div></div><span class="badge bt">Confirmed</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Livestock Summary</span><span class="card-action" onclick="nav('lv-herd',null)">View</span></div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
+            <div style="display:flex;justify-content:space-between;"><div style="display:flex;align-items:center;gap:6px;"><span>🐄</span>Cattle (12)</div><span style="font-weight:600;color:var(--tx2);">ZMW 54,000</span></div>
+            <div style="display:flex;justify-content:space-between;"><div style="display:flex;align-items:center;gap:6px;"><span>🐐</span>Goats (28)</div><span style="font-weight:600;color:var(--tx2);">ZMW 14,000</span></div>
+            <div style="display:flex;justify-content:space-between;"><div style="display:flex;align-items:center;gap:6px;"><span>🐓</span>Chickens (80)</div><span style="font-weight:600;color:var(--tx2);">ZMW 12,000</span></div>
+            <div style="display:flex;justify-content:space-between;"><div style="display:flex;align-items:center;gap:6px;"><span>🐷</span>Pigs (7)</div><span style="font-weight:600;color:var(--tx2);">ZMW 16,800</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Low Stock Alerts</span><span class="card-action" onclick="nav('stock-all',null)">Reorder</span></div>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
+            <div><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span>Mancozeb 80WP</span><span style="color:var(--r600);font-weight:600;">1.2 kg</span></div><div class="pb"><div class="pf" style="width:12%;background:var(--r400);"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span>Layer mash</span><span style="color:var(--r600);font-weight:600;">12 kg</span></div><div class="pb"><div class="pf" style="width:18%;background:var(--r400);"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span>Goat dewormer</span><span style="color:var(--a600);font-weight:600;">8 doses</span></div><div class="pb"><div class="pf" style="width:28%;background:#EF9F27;"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ AI AGRONOMIST ═══ -->
+    <div class="panel" id="panel-agronomist">
+      <div class="pg-title">AI Agronomist</div>
+      <div class="pg-sub">Your personal advisor — crops, livestock, nutrition, pests, and business.</div>
+      <div class="g2">
+        <div class="card chat-wrap">
+          <div class="chat-msgs" id="ai-msgs">
+            <div class="msg msg-ai"><div class="msg-av"><i class="ti ti-leaf"></i></div><div class="bubble">Hello! I have full context of your farm — 5 crop blocks, 127 livestock, 3 soil reports, and your ledger. What do you need help with?</div></div>
+          </div>
+          <div class="chips">
+            <span class="chip" onclick="sendChip(this)">Tomato leaves yellowing Block A</span>
+            <span class="chip" onclick="sendChip(this)">Goat respiratory treatment</span>
+            <span class="chip" onclick="sendChip(this)">4-week spray program</span>
+            <span class="chip" onclick="sendChip(this)">Best feed for broilers week 4</span>
+            <span class="chip" onclick="sendChip(this)">When to sell CT-006 steer</span>
+          </div>
+          <div class="chat-input">
+            <div class="fg" style="flex:1;margin-bottom:0;"><input type="text" id="ai-inp" placeholder="Ask anything about your farm..." onkeydown="if(event.key==='Enter')sendAI()"></div>
+            <button class="btn btn-primary" onclick="sendAI()"><i class="ti ti-send"></i></button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:10px;">Farm Context Loaded</div>
+            <div style="font-size:13px;display:flex;flex-direction:column;gap:7px;">
+              <div style="display:flex;align-items:center;gap:7px;"><i class="ti ti-check" style="color:var(--g600);"></i>5 active crop cycles</div>
+              <div style="display:flex;align-items:center;gap:7px;"><i class="ti ti-check" style="color:var(--g600);"></i>127 livestock (4 species)</div>
+              <div style="display:flex;align-items:center;gap:7px;"><i class="ti ti-check" style="color:var(--g600);"></i>Soil reports Blocks A–C</div>
+              <div style="display:flex;align-items:center;gap:7px;"><i class="ti ti-check" style="color:var(--g600);"></i>Full ledger + spray logs</div>
+              <div style="display:flex;align-items:center;gap:7px;"><i class="ti ti-check" style="color:var(--g600);"></i>Vaccination records</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:10px;">Active Alerts</div>
+            <div class="alert alert-err"><i class="ti ti-alert-triangle"></i>Block A fungicide overdue 3 days</div>
+            <div class="alert alert-br"><i class="ti ti-stethoscope"></i>GT-008, GT-009 — respiratory</div>
+            <div class="alert alert-warn"><i class="ti ti-syringe"></i>Cattle FMD vaccine due today</div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:8px;">Seasonal Advisory</div>
+            <div style="font-size:13px;color:var(--tx3);line-height:1.65;">Humidity at 72% this week. Tighten tomato spray to 10-day intervals. Ensure chicken drinkers are cleaned daily — respiratory infection spreads fast in humid conditions.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ AI CALCULATOR ═══ -->
+    <div class="panel" id="panel-crop-calc">
+      <div class="pg-title">AI Plant Calculator</div>
+      <div class="pg-sub">Population counts, cost estimates, break-even, ROI — then ask AI to review your plan.</div>
+      <div class="g2">
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px;">Bed & Spacing</div>
+            <div class="fr fr-2">
+              <div class="fg"><label>Bed Length (m)</label><input type="number" id="c-len" value="100" oninput="calc()"></div>
+              <div class="fg"><label>Bed Width (m)</label><input type="number" id="c-wid" value="1.2" step="0.1" oninput="calc()"></div>
+            </div>
+            <div class="fr fr-2">
+              <div class="fg"><label>Row Spacing (cm)</label><input type="number" id="c-rs" value="30" oninput="calc()"></div>
+              <div class="fg"><label>Plant Spacing (cm)</label><input type="number" id="c-ps" value="25" oninput="calc()"></div>
+            </div>
+            <div class="fr fr-2">
+              <div class="fg"><label>Number of Beds</label><input type="number" id="c-nb" value="10" oninput="calc()"></div>
+              <div class="fg"><label>Crop</label>
+                <select id="c-crop" onchange="calc()">
+                  <option value="tomato">Tomato</option><option value="cabbage">Cabbage</option>
+                  <option value="pepper">Pepper</option><option value="onion">Onion</option>
+                  <option value="strawberry">Strawberry</option><option value="ginger">Ginger</option>
+                  <option value="maize">Maize</option><option value="groundnut">Groundnut</option>
+                </select>
+              </div>
+            </div>
+            <div class="rbox">
+              <div class="rgrid">
+                <div class="ri"><div class="rn" id="r-pb">—</div><div class="rl">Plants / bed</div></div>
+                <div class="ri"><div class="rn" id="r-tot">—</div><div class="rl">Total plants</div></div>
+                <div class="ri"><div class="rn" id="r-ha">—</div><div class="rl">Plants / ha</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:14px;">Cost Estimator</div>
+            <div class="fr fr-2">
+              <div class="fg"><label>Seedling cost (ZMW ea)</label><input type="number" id="c-sc" value="0.80" step="0.05" oninput="calc()"></div>
+              <div class="fg"><label>Wastage buffer (%)</label><input type="number" id="c-wb" value="10" oninput="calc()"></div>
+            </div>
+            <div class="fr fr-2">
+              <div class="fg"><label>Fertiliser / plant (ZMW)</label><input type="number" id="c-fc" value="0.50" step="0.05" oninput="calc()"></div>
+              <div class="fg"><label>Labour / bed / day (ZMW)</label><input type="number" id="c-lc" value="120" oninput="calc()"></div>
+            </div>
+            <div class="fr fr-2">
+              <div class="fg"><label>Chemicals total (ZMW)</label><input type="number" id="c-ch" value="2400" oninput="calc()"></div>
+              <div class="fg"><label>Irrigation total (ZMW)</label><input type="number" id="c-ir" value="1800" oninput="calc()"></div>
+            </div>
+            <hr>
+            <div id="c-breakdown" style="font-size:13px;display:flex;flex-direction:column;gap:7px;"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;margin-top:8px;border-top:1px solid var(--bord);">
+              <span style="font-weight:600;font-size:14px;">Total input cost</span>
+              <span id="c-grand" style="font-family:var(--font-display);font-size:20px;color:var(--g700);">—</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:10px;">Yield & Break-even</div>
+            <!-- YIELD UNIT TOGGLE -->
+            <div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Yield unit</div>
+            <div class="unit-toggle" id="yield-units">
+              <button class="unit-btn active" onclick="setYieldUnit('kg',this)">Kg</button>
+              <button class="unit-btn" onclick="setYieldUnit('crate',this)">Crates (30 kg)</button>
+              <button class="unit-btn" onclick="setYieldUnit('bag50',this)">Bags (50 kg)</button>
+              <button class="unit-btn" onclick="setYieldUnit('bag25',this)">Bags (25 kg)</button>
+              <button class="unit-btn" onclick="setYieldUnit('box',this)">Boxes (10 kg)</button>
+            </div>
+            <div class="fr fr-2">
+              <div class="fg"><label id="yield-lbl">Yield per bed (kg)</label><input type="number" id="c-yld" value="120" oninput="calc()"></div>
+              <div class="fg"><label id="price-lbl">Price per kg (ZMW)</label><input type="number" id="c-pr" value="4.50" step="0.10" oninput="calc()"></div>
+            </div>
+            <div id="yield-hint" style="font-size:11.5px;color:var(--tx4);margin-top:-4px;margin-bottom:10px;"></div>
+            <div class="rbox">
+              <div class="rgrid">
+                <div class="ri"><div class="rn" id="be-rev" style="font-size:17px;">—</div><div class="rl">Gross revenue</div></div>
+                <div class="ri"><div class="rn" id="be-pro" style="font-size:17px;">—</div><div class="rl">Net profit</div></div>
+                <div class="ri"><div class="rn" id="be-roi" style="font-size:17px;">—</div><div class="rl">ROI %</div></div>
+              </div>
+            </div>
+            <div style="margin-top:10px;padding:10px 12px;background:var(--surf2);border-radius:var(--r8);border:1px solid var(--bord);">
+              <div style="font-size:11px;color:var(--tx4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;">Break-even yield needed</div>
+              <div id="be-breakeven" style="font-family:var(--font-display);font-size:16px;color:var(--tx2);">—</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:10px;">Agronomy Guide — <span id="c-cropname">Tomato</span></div>
+            <div id="c-advice" style="font-size:13px;color:var(--tx3);line-height:1.65;margin-bottom:10px;"></div>
+            <div id="c-tags" style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px;"></div>
+            <hr>
+            <div class="card-title" style="margin-bottom:8px;">Nutrition Schedule</div>
+            <div id="c-nutr" style="font-size:13px;color:var(--tx3);line-height:1.65;"></div>
+          </div>
+          <div class="card">
+            <div class="ai-badge"><i class="ti ti-robot"></i> AI Analysis</div>
+            <div style="font-size:13px;color:var(--tx3);margin-bottom:10px;">Send your current plan to the AI for a personalized review and risk assessment.</div>
+            <button class="btn btn-primary" style="width:100%;" onclick="aiAnalyseCalc()"><i class="ti ti-brain"></i> Analyse My Plan</button>
+            <div id="ai-calc-result" style="margin-top:10px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ HARVEST LOG ═══ -->
+    <div class="panel" id="panel-crop-harvest">
+      <div class="pg-title">Harvest Log</div>
+      <div class="pg-sub">Record harvests in kg, crates, bags, or boxes — all automatically converted.</div>
+      <div class="g4" style="margin-bottom:14px;">
+        <div class="stat-card"><div class="stat-lbl">Total Harvested</div><div class="stat-val">8,420 kg</div><div class="stat-sub">286 crates (30kg equiv)</div></div>
+        <div class="stat-card"><div class="stat-lbl">Sold</div><div class="stat-val">7,840 kg</div><div class="stat-sub">93% of harvest</div></div>
+        <div class="stat-card"><div class="stat-lbl">In Storage</div><div class="stat-val">580 kg</div><div class="stat-sub">≈19 crates</div></div>
+        <div class="stat-card"><div class="stat-lbl">Sales Revenue</div><div class="stat-val">ZMW 42,800</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Harvest Records</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-harvest')"><i class="ti ti-plus"></i> Log Harvest</button></div>
+        <div class="tbl-wrap">
+          <table><thead><tr><th>Date</th><th>Block</th><th>Crop</th><th>Qty (units)</th><th>Kg equiv</th><th>Grade A</th><th>Grade B</th><th>Waste</th><th>Buyer</th><th>Price</th><th>Revenue</th></tr></thead><tbody>
+            <tr><td>15 May</td><td>Block D</td><td>Onion</td><td>48 bags (25kg)</td><td>1,200 kg</td><td>960 kg</td><td>180 kg</td><td>60 kg</td><td>Soweto Mkt</td><td>ZMW 6/kg</td><td style="font-weight:600;color:var(--g600);">ZMW 6,840</td></tr>
+            <tr><td>12 May</td><td>Block B</td><td>Cabbage</td><td>48 bags (50kg)</td><td>2,400 kg</td><td>2,100 kg</td><td>260 kg</td><td>40 kg</td><td>City Market</td><td>ZMW 3.80/kg</td><td style="font-weight:600;color:var(--g600);">ZMW 8,968</td></tr>
+            <tr><td>08 May</td><td>Block A</td><td>Tomato</td><td>61 crates (30kg)</td><td>1,840 kg</td><td>1,500 kg</td><td>300 kg</td><td>40 kg</td><td>Nakumatt</td><td>ZMW 5.50/kg</td><td style="font-weight:600;color:var(--g600);">ZMW 9,900</td></tr>
+          </tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ACCOUNTS — LEDGER ═══ -->
+    <div class="panel" id="panel-acc-ledger">
+      <div class="pg-title">Farm Ledger</div>
+      <div class="pg-sub">All transactions — crops, livestock, labour, inputs.</div>
+      <div class="g4" style="margin-bottom:14px;">
+        <div class="stat-card"><div class="stat-lbl">Total Income</div><div class="stat-val" style="color:var(--g600);">ZMW 52,600</div></div>
+        <div class="stat-card"><div class="stat-lbl">Total Expenses</div><div class="stat-val" style="color:var(--r600);">ZMW 22,840</div></div>
+        <div class="stat-card"><div class="stat-lbl">Net Balance</div><div class="stat-val">ZMW 29,760</div></div>
+        <div class="stat-card"><div class="stat-lbl">This Month</div><div class="stat-val">+ZMW 9,840</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Transactions</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-ledger-entry')"><i class="ti ti-plus"></i> Add Entry</button></div>
+        <div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Source</th><th>Type</th><th>Amount</th></tr></thead><tbody id="ledger-rows">
+          <tr><td>15 May</td><td>Onion sale — Soweto Market</td><td>Produce Sales</td><td>Crops</td><td><span class="badge bg">Income</span></td><td style="font-weight:600;color:var(--g600);">+ZMW 6,840</td></tr>
+          <tr><td>14 May</td><td>Payroll May week 2</td><td>Labour</td><td>All</td><td><span class="badge br">Expense</span></td><td style="font-weight:600;color:var(--r600);">−ZMW 7,320</td></tr>
+          <tr><td>12 May</td><td>Milk sales wk 2</td><td>Livestock</td><td>Dairy</td><td><span class="badge bg">Income</span></td><td style="font-weight:600;color:var(--g600);">+ZMW 513</td></tr>
+          <tr><td>10 May</td><td>Goat sale ×3</td><td>Livestock Sale</td><td>Livestock</td><td><span class="badge bg">Income</span></td><td style="font-weight:600;color:var(--g600);">+ZMW 2,700</td></tr>
+          <tr><td>10 May</td><td>Mancozeb 80WP ×5kg</td><td>Chemicals</td><td>Crops</td><td><span class="badge br">Expense</span></td><td style="font-weight:600;color:var(--r600);">−ZMW 840</td></tr>
+          <tr><td>09 May</td><td>Layer mash 50kg</td><td>Feed</td><td>Livestock</td><td><span class="badge br">Expense</span></td><td style="font-weight:600;color:var(--r600);">−ZMW 600</td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ═══ ACCOUNTS — P&L ═══ -->
+    <div class="panel" id="panel-acc-pl">
+      <div class="pg-title">Profit & Loss Report</div>
+      <div class="pg-sub">Full season P&L — crops and livestock combined.</div>
+      <div class="g2" style="margin-bottom:14px;">
+        <div class="card"><div class="card-header"><span class="card-title">Expense Breakdown</span></div><canvas id="ch-expenses" height="220"></canvas></div>
+        <div class="card"><div class="card-header"><span class="card-title">Revenue by Stream</span></div><canvas id="ch-revstream" height="220"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">P&L Summary</span><button class="btn btn-sm"><i class="ti ti-download"></i> Export PDF</button></div>
+        <div class="tbl-wrap"><table><thead><tr><th>Category</th><th>Budget</th><th>Actual</th><th>Variance</th><th>Progress</th></tr></thead><tbody>
+          <tr><td style="font-weight:600;color:var(--g600);">Crop Sales</td><td>ZMW 80,000</td><td>ZMW 42,800</td><td style="color:var(--a600);">−37,200</td><td><div class="pb" style="width:120px;"><div class="pf" style="width:53%;"></div></div></td></tr>
+          <tr><td style="font-weight:600;color:var(--g600);">Livestock Revenue</td><td>ZMW 12,000</td><td>ZMW 9,800</td><td style="color:var(--a600);">−2,200</td><td><div class="pb" style="width:120px;"><div class="pf" style="width:82%;"></div></div></td></tr>
+          <tr><td style="font-weight:600;color:var(--r600);">Labour & Wages</td><td>ZMW 9,000</td><td>ZMW 8,640</td><td style="color:var(--g600);">+360 saved</td><td><div class="pb" style="width:120px;"><div class="pf" style="width:96%;"></div></div></td></tr>
+          <tr><td style="font-weight:600;color:var(--r600);">Crop Inputs</td><td>ZMW 9,500</td><td>ZMW 7,560</td><td style="color:var(--g600);">+1,940 saved</td><td><div class="pb" style="width:120px;"><div class="pf" style="width:80%;"></div></div></td></tr>
+          <tr><td style="font-weight:600;color:var(--r600);">Livestock Feed</td><td>ZMW 5,000</td><td>ZMW 4,600</td><td style="color:var(--g600);">+400 saved</td><td><div class="pb" style="width:120px;"><div class="pf" style="width:92%;"></div></div></td></tr>
+          <tr><td style="font-weight:600;color:var(--r600);">Vet & Animal Health</td><td>ZMW 2,000</td><td>ZMW 2,040</td><td style="color:var(--r600);">−40 over</td><td><div class="pb" style="width:120px;"><div class="pf" style="width:100%;background:var(--r400);"></div></div></td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ═══ STOCK — ALL INVENTORY ═══ -->
+    <div class="panel" id="panel-stock-all">
+      <div class="pg-title">All Inventory</div>
+      <div class="pg-sub">Chemicals, fertilisers, feed, vaccines, equipment — reorder alerts included.</div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">Stock Register</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-stock-entry')"><i class="ti ti-plus"></i> Add Item</button></div>
+        <div class="tbl-wrap"><table><thead><tr><th>Item</th><th>Category</th><th>Dept</th><th>In Stock</th><th>Reorder Level</th><th>Unit Cost</th><th>Stock Value</th><th>Status</th><th></th></tr></thead><tbody id="stock-rows">
+          <tr><td>Mancozeb 80WP</td><td>Fungicide</td><td>Crops</td><td>1.2 kg</td><td>5 kg</td><td>ZMW 168/kg</td><td>ZMW 202</td><td><span class="badge br">Reorder Now</span></td><td><span class="link" onclick="openModal('modal-stock-entry')">Edit</span></td></tr>
+          <tr><td>Layer mash 16%</td><td>Feed</td><td>Livestock</td><td>12 kg</td><td>25 kg</td><td>ZMW 12/kg</td><td>ZMW 144</td><td><span class="badge br">Reorder Now</span></td><td><span class="link" onclick="openModal('modal-stock-entry')">Edit</span></td></tr>
+          <tr><td>Oxytetracycline</td><td>Vet drug</td><td>Livestock</td><td>4 doses</td><td>10 doses</td><td>ZMW 45/dose</td><td>ZMW 180</td><td><span class="badge ba">Low</span></td><td><span class="link" onclick="openModal('modal-stock-entry')">Edit</span></td></tr>
+          <tr><td>CAN Fertiliser</td><td>Fertiliser</td><td>Crops</td><td>80 kg</td><td>50 kg</td><td>ZMW 12/kg</td><td>ZMW 960</td><td><span class="badge bg">OK</span></td><td><span class="link" onclick="openModal('modal-stock-entry')">Edit</span></td></tr>
+          <tr><td>Newcastle vaccine</td><td>Vaccine</td><td>Livestock</td><td>100 doses</td><td>80 doses</td><td>ZMW 3.20</td><td>ZMW 320</td><td><span class="badge bg">OK</span></td><td><span class="link" onclick="openModal('modal-stock-entry')">Edit</span></td></tr>
+          <tr><td>Drip irrigation tape</td><td>Irrigation</td><td>Crops</td><td>40 m</td><td>100 m</td><td>ZMW 18/m</td><td>ZMW 720</td><td><span class="badge ba">Low</span></td><td><span class="link" onclick="openModal('modal-stock-entry')">Edit</span></td></tr>
+          <tr><td>Azoxystrobin</td><td>Fungicide</td><td>Crops</td><td>0.8 L</td><td>1 L</td><td>ZMW 320/L</td><td>ZMW 256</td><td><span class="badge ba">Low</span></td><td><span class="link" onclick="openModal('modal-stock-entry')">Edit</span></td></tr>
+          <tr><td>Goat pellets</td><td>Feed</td><td>Livestock</td><td>22 kg</td><td>20 kg</td><td>ZMW 16/kg</td><td>ZMW 352</td><td><span class="badge bg">OK</span></td><td><span class="link" onclick="openModal('modal-stock-entry')">Edit</span></td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ═══ LIVESTOCK — HERD ═══ -->
+    <div class="panel" id="panel-lv-herd">
+      <div class="pg-title">Herd Register</div>
+      <div class="pg-sub">All animals — individual records, health status, and estimated value.</div>
+      <div class="g4" style="margin-bottom:14px;">
+        <div class="stat-card"><div class="stat-lbl">Total Head</div><div class="stat-val">127</div><div class="stat-sub">4 species</div></div>
+        <div class="stat-card"><div class="stat-lbl">Herd Value</div><div class="stat-val">ZMW 84,800</div></div>
+        <div class="stat-card"><div class="stat-lbl">Sick / Attention</div><div class="stat-val" style="color:var(--r600);">2</div><div class="stat-sub">GT-008, GT-009</div></div>
+        <div class="stat-card"><div class="stat-lbl">Market Ready</div><div class="stat-val">3</div><div class="stat-sub">CT-006 · PG-004 · PG-005</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Animal Register</span>
+          <div style="display:flex;gap:8px;">
+            <select class="btn btn-sm" style="font-size:12px;padding:5px 10px;" id="species-filter" onchange="filterHerd()">
+              <option value="all">All Species</option>
+              <option value="cattle">🐄 Cattle</option>
+              <option value="goat">🐐 Goats</option>
+              <option value="chicken">🐓 Chickens</option>
+              <option value="pig">🐷 Pigs</option>
+            </select>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modal-animal-entry')"><i class="ti ti-plus"></i> Add Animal</button>
+          </div>
+        </div>
+        <div class="tbl-wrap"><table><thead><tr><th>Tag</th><th>Species</th><th>Breed</th><th>Sex</th><th>Age</th><th>Weight</th><th>Purpose</th><th>Status</th><th>Est. Value</th></tr></thead><tbody id="herd-rows">
+          <tr><td>CT-001</td><td>🐄 Cattle</td><td>Brahman ×</td><td>Bull</td><td>3 yr</td><td>380 kg</td><td>Breeding</td><td><span class="badge bg">Healthy</span></td><td>ZMW 6,000</td></tr>
+          <tr><td>CT-004</td><td>🐄 Cattle</td><td>Friesian</td><td>Cow</td><td>3 yr</td><td>380 kg</td><td>Dairy</td><td><span class="badge ba">Pregnant</span></td><td>ZMW 8,000</td></tr>
+          <tr><td>CT-006</td><td>🐄 Cattle</td><td>Brahman ×</td><td>Steer</td><td>2 yr</td><td>290 kg</td><td>Beef</td><td><span class="badge bt">Market ready</span></td><td>ZMW 4,200</td></tr>
+          <tr><td>GT-008</td><td>🐐 Goat</td><td>Boer</td><td>Doe</td><td>3 yr</td><td>48 kg</td><td>Meat</td><td><span class="badge br">Sick — isolated</span></td><td>ZMW 900</td></tr>
+          <tr><td>GT-009</td><td>🐐 Goat</td><td>Boer</td><td>Doe</td><td>2 yr</td><td>44 kg</td><td>Meat</td><td><span class="badge br">Sick — isolated</span></td><td>ZMW 800</td></tr>
+          <tr><td>PG-004</td><td>🐷 Pig</td><td>Large White</td><td>Barrow</td><td>8 wk</td><td>46 kg</td><td>Pork</td><td><span class="badge bt">Market ready</span></td><td>ZMW 2,400</td></tr>
+          <tr><td>PG-005</td><td>🐷 Pig</td><td>Large White</td><td>Barrow</td><td>8 wk</td><td>49 kg</td><td>Pork</td><td><span class="badge bt">Market ready</span></td><td>ZMW 2,600</td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ═══ LIVESTOCK — HEALTH ═══ -->
+    <div class="panel" id="panel-lv-health">
+      <div class="pg-title">Health & Vaccinations</div>
+      <div class="pg-sub">Treatments, vaccination schedule, deworming, and vet records.</div>
+      <div class="alert alert-br"><i class="ti ti-stethoscope"></i><div><strong>GT-008 & GT-009:</strong> Suspected Pasteurellosis — Day 2 of Oxytetracycline 10mg/kg IM. Monitor daily. Isolate from herd until clear.</div></div>
+      <div class="g2" style="margin-bottom:12px;">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Upcoming Vaccinations</span><button class="btn btn-sm" onclick="openModal('modal-vacc-entry')"><i class="ti ti-plus"></i> Log Vaccine</button></div>
+          <div style="display:flex;flex-direction:column;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bord2);font-size:13px;"><div><div style="font-weight:600;">FMD — Cattle (12 head)</div><div style="font-size:11px;color:var(--tx4);">Foot & Mouth</div></div><span class="badge br">Due Today</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bord2);font-size:13px;"><div><div style="font-weight:600;">Newcastle — Chickens (80)</div><div style="font-size:11px;color:var(--tx4);">Via drinking water</div></div><div style="text-align:right;"><div style="font-size:12px;color:var(--tx3);">28 May</div><span class="badge bx">Scheduled</span></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;font-size:13px;"><div><div style="font-weight:600;">PPR — Goats (28)</div><div style="font-size:11px;color:var(--tx4);">Peste des Petits Ruminants</div></div><div style="text-align:right;"><div style="font-size:12px;color:var(--tx3);">15 Jun</div><span class="badge bx">Scheduled</span></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Active Cases</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-treatment-entry')"><i class="ti ti-plus"></i> Log Treatment</button></div>
+          <div class="alert alert-br"><i class="ti ti-alert-triangle"></i><div><strong>GT-008, GT-009</strong> — Respiratory. Day 2 of OTC treatment. Vet review on Day 5.</div></div>
+          <div class="card-title" style="margin-bottom:8px;margin-top:4px;">Deworming Schedule</div>
+          <div class="tbl-wrap"><table><thead><tr><th>Species</th><th>Product</th><th>Last done</th><th>Next due</th></tr></thead><tbody>
+            <tr><td>Cattle</td><td>Albendazole 10%</td><td>15 Mar</td><td><span style="color:var(--g600);">15 Jun</span></td></tr>
+            <tr><td>Goats</td><td>Ivermectin</td><td>01 Apr</td><td><span style="color:var(--a600);">01 Jun</span></td></tr>
+            <tr><td>Pigs</td><td>Levamisole</td><td>10 Apr</td><td><span style="color:var(--a600);">10 Jun</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ LIVESTOCK — PRODUCTION ═══ -->
+    <div class="panel" id="panel-lv-prod">
+      <div class="pg-title">Production Records</div>
+      <div class="pg-sub">Daily egg collection, milk yield, and weight gain logs.</div>
+      <div class="g4" style="margin-bottom:14px;">
+        <div class="stat-card"><div class="stat-lbl">Eggs Today</div><div class="stat-val">84</div><div class="stat-sub">84% lay rate</div><div class="stat-trend up"><i class="ti ti-trending-up"></i>+4 vs yesterday</div></div>
+        <div class="stat-card"><div class="stat-lbl">Milk Today</div><div class="stat-val">11.4 L</div><div class="stat-sub">CT-003 + CT-004</div></div>
+        <div class="stat-card"><div class="stat-lbl">Egg Revenue (Month)</div><div class="stat-val">ZMW 1,890</div><div class="stat-sub">@ZMW 1.50/egg</div></div>
+        <div class="stat-card"><div class="stat-lbl">Milk Revenue (Month)</div><div class="stat-val">ZMW 2,052</div><div class="stat-sub">@ZMW 6.00/L</div></div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Log Daily Production</span></div>
+          <div class="fr fr-2">
+            <div class="fg"><label>Date</label><input type="date" id="prod-date"></div>
+            <div class="fg"><label>Type</label><select id="prod-type"><option>Eggs</option><option>Milk (litres)</option><option>Weight gain</option></select></div>
+          </div>
+          <div class="fr fr-2">
+            <div class="fg"><label>Quantity</label><input type="number" id="prod-qty" placeholder="e.g. 84"></div>
+            <div class="fg"><label>Animal / Flock</label><select id="prod-animal"><option>Layer flock A (60 birds)</option><option>CT-003 (Friesian cow)</option><option>CT-004 (Friesian cow)</option><option>Broiler batch 3</option></select></div>
+          </div>
+          <div class="fg"><label>Notes</label><textarea id="prod-notes" placeholder="Any notes about production..."></textarea></div>
+          <button class="btn btn-primary" style="width:100%;" onclick="logProduction()"><i class="ti ti-check"></i> Log Entry</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Egg Trend — 7 Days</span></div>
+          <canvas id="ch-eggs" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PAYROLL ═══ -->
+    <div class="panel" id="panel-payroll">
+      <div class="pg-title">Payroll & Wages</div>
+      <div class="pg-sub">Permanent staff, casual workers, and pay run records.</div>
+      <div class="g4" style="margin-bottom:14px;">
+        <div class="stat-card"><div class="stat-lbl">Permanent Staff</div><div class="stat-val">8</div></div>
+        <div class="stat-card"><div class="stat-lbl">Casual Workers</div><div class="stat-val">14</div><div class="stat-sub">Active this week</div></div>
+        <div class="stat-card"><div class="stat-lbl">Payroll Due</div><div class="stat-val" style="color:var(--r600);">ZMW 14,640</div><div class="stat-sub">Fri 23 May</div></div>
+        <div class="stat-card"><div class="stat-lbl">YTD Labour Cost</div><div class="stat-val">ZMW 58,200</div></div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Permanent Staff</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-staff-entry')"><i class="ti ti-plus"></i> Add Staff</button></div>
+          <div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Role</th><th>Dept</th><th>Monthly</th><th>Status</th></tr></thead><tbody>
+            <tr><td>Joseph Banda</td><td>Lead Foreman</td><td>All</td><td>ZMW 1,800</td><td><span class="badge bg">Active</span></td></tr>
+            <tr><td>Grace Mwale</td><td>Irrigator</td><td>Crops</td><td>ZMW 1,200</td><td><span class="badge bg">Active</span></td></tr>
+            <tr><td>Mulenga Chanda</td><td>Livestock hand</td><td>Livestock</td><td>ZMW 1,100</td><td><span class="badge bg">Active</span></td></tr>
+            <tr><td>Mary Phiri</td><td>Nursery Mgr</td><td>Crops</td><td>ZMW 1,200</td><td><span class="badge bg">Active</span></td></tr>
+            <tr><td>Chanda Mulenga</td><td>Driver</td><td>All</td><td>ZMW 1,400</td><td><span class="badge ba">Leave</span></td></tr>
+          </tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Log Casual Work</span></div>
+          <div class="fr fr-2">
+            <div class="fg"><label>Worker Name</label><input type="text" placeholder="Full name"></div>
+            <div class="fg"><label>Task</label><input type="text" placeholder="e.g. Harvest — Block D"></div>
+          </div>
+          <div class="fr fr-3">
+            <div class="fg"><label>Days worked</label><input type="number" id="cw-days" value="1" oninput="calcCasual()"></div>
+            <div class="fg"><label>Rate / day (ZMW)</label><input type="number" id="cw-rate" value="90" oninput="calcCasual()"></div>
+            <div class="fg"><label>Total (ZMW)</label><input type="number" id="cw-total" readonly style="background:var(--surf2);"></div>
+          </div>
+          <div class="fr fr-2">
+            <div class="fg"><label>Date</label><input type="date"></div>
+            <div class="fg"><label>Block / Pen</label><select><option>Block A</option><option>Block B</option><option>Block C</option><option>Block D</option><option>Block E</option><option>Livestock pens</option><option>General</option></select></div>
+          </div>
+          <button class="btn btn-primary" style="width:100%;"><i class="ti ti-check"></i> Log Payment</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MARKET PRICES ═══ -->
+    <div class="panel" id="panel-market">
+      <div class="pg-title">Market Prices</div>
+      <div class="pg-sub">Current local market rates — updated weekly. Use these in your break-even calculations.</div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Crop Prices — Lusaka (May 2026)</span><button class="btn btn-sm" onclick="openModal('modal-price-entry')"><i class="ti ti-edit"></i> Update Price</button></div>
+          <div class="tbl-wrap"><table><thead><tr><th>Crop</th><th>Unit</th><th>Price</th><th>Min</th><th>Max</th><th>Trend</th></tr></thead><tbody>
+            <tr><td>Tomato</td><td>Crate (30kg)</td><td style="font-weight:600;">ZMW 165</td><td>ZMW 120</td><td>ZMW 220</td><td><span class="badge ba">↓ Glut season</span></td></tr>
+            <tr><td>Cabbage</td><td>Head</td><td style="font-weight:600;">ZMW 8</td><td>ZMW 5</td><td>ZMW 15</td><td><span class="badge bg">↑ Rising</span></td></tr>
+            <tr><td>Onion</td><td>Bag (25kg)</td><td style="font-weight:600;">ZMW 150</td><td>ZMW 120</td><td>ZMW 200</td><td><span class="badge bg">→ Stable</span></td></tr>
+            <tr><td>Pepper</td><td>Kg</td><td style="font-weight:600;">ZMW 18</td><td>ZMW 12</td><td>ZMW 28</td><td><span class="badge bg">↑ Rising</span></td></tr>
+            <tr><td>Maize</td><td>50kg bag</td><td style="font-weight:600;">ZMW 210</td><td>ZMW 180</td><td>ZMW 260</td><td><span class="badge ba">↓ Post harvest</span></td></tr>
+          </tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Livestock Prices — Lusaka</span></div>
+          <div class="tbl-wrap"><table><thead><tr><th>Animal</th><th>Unit</th><th>Price</th><th>Trend</th></tr></thead><tbody>
+            <tr><td>Cattle (beef)</td><td>Per head (250–350kg)</td><td style="font-weight:600;">ZMW 3,800–5,200</td><td><span class="badge bg">→ Stable</span></td></tr>
+            <tr><td>Goat (Boer)</td><td>Per head</td><td style="font-weight:600;">ZMW 800–1,100</td><td><span class="badge bg">↑ Rising</span></td></tr>
+            <tr><td>Pig (pork)</td><td>Per kg live weight</td><td style="font-weight:600;">ZMW 48–55</td><td><span class="badge bg">→ Stable</span></td></tr>
+            <tr><td>Broiler chicken</td><td>Per bird (2kg+)</td><td style="font-weight:600;">ZMW 55–70</td><td><span class="badge ba">↓ Slightly</span></td></tr>
+            <tr><td>Eggs</td><td>Per egg</td><td style="font-weight:600;">ZMW 1.30–1.80</td><td><span class="badge bg">→ Stable</span></td></tr>
+            <tr><td>Milk</td><td>Per litre</td><td style="font-weight:600;">ZMW 5.50–7.00</td><td><span class="badge bg">↑ Rising</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ WEATHER ═══ -->
+    <div class="panel" id="panel-weather">
+      <div class="pg-title">Weather & Season Planner</div>
+      <div class="pg-sub">Local conditions and seasonal calendar for Lusaka zone.</div>
+      <div class="g4" style="margin-bottom:14px;">
+        <div class="stat-card"><div class="stat-lbl">Today</div><div class="stat-val">24°C</div><div class="stat-sub">Partly cloudy · 72% humidity</div></div>
+        <div class="stat-card"><div class="stat-lbl">This Week</div><div class="stat-val">8mm rain</div><div class="stat-sub">Expected Thursday</div></div>
+        <div class="stat-card"><div class="stat-lbl">Season</div><div class="stat-val">Cool Dry</div><div class="stat-sub">May–Aug · Low disease pressure</div></div>
+        <div class="stat-card"><div class="stat-lbl">Frost Risk</div><div class="stat-val">Low</div><div class="stat-sub">Min 10°C Jul–Aug</div></div>
+      </div>
+      <div class="g2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">5-Day Forecast</span></div>
+          <div style="display:flex;flex-direction:column;gap:0;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bord2);font-size:13px;"><span style="font-weight:600;width:80px;">Today</span><span style="font-size:20px;">⛅</span><span>24° / 14°</span><span>72% humidity</span><span style="color:var(--a600);">Spray today</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bord2);font-size:13px;"><span style="font-weight:600;width:80px;">Wednesday</span><span style="font-size:20px;">🌤</span><span>22° / 12°</span><span>65% humidity</span><span style="color:var(--g600);">Good spray day</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bord2);font-size:13px;"><span style="font-weight:600;width:80px;">Thursday</span><span style="font-size:20px;">🌧</span><span>18° / 11°</span><span>88% humidity</span><span style="color:var(--r600);">No spraying</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bord2);font-size:13px;"><span style="font-weight:600;width:80px;">Friday</span><span style="font-size:20px;">🌤</span><span>21° / 13°</span><span>70% humidity</span><span style="color:var(--a600);">Monitor fungal</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;font-size:13px;"><span style="font-weight:600;width:80px;">Saturday</span><span style="font-size:20px;">☀️</span><span>25° / 14°</span><span>60% humidity</span><span style="color:var(--g600);">Ideal spray day</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Seasonal Planting Calendar — Lusaka</span></div>
+          <div class="tbl-wrap"><table><thead><tr><th>Crop</th><th>Plant</th><th>Harvest</th><th>Season</th></tr></thead><tbody>
+            <tr><td>Tomato</td><td>Mar–Apr, Jul–Aug</td><td>Jun–Jul, Oct–Nov</td><td><span class="badge bt">Cool dry + Warm</span></td></tr>
+            <tr><td>Cabbage</td><td>Feb–Apr, Jul–Sep</td><td>May–Jun, Nov–Jan</td><td><span class="badge bg">Cool dry</span></td></tr>
+            <tr><td>Onion</td><td>Mar–Jun</td><td>Aug–Oct</td><td><span class="badge bg">Cool dry</span></td></tr>
+            <tr><td>Pepper</td><td>Aug–Sep</td><td>Nov–Feb</td><td><span class="badge ba">Hot wet</span></td></tr>
+            <tr><td>Maize</td><td>Nov–Dec</td><td>Apr–May</td><td><span class="badge ba">Rainy season</span></td></tr>
+            <tr><td>Groundnut</td><td>Nov–Dec</td><td>Apr–May</td><td><span class="badge ba">Rainy season</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ORDERS ═══ -->
+    <div class="panel" id="panel-orders">
+      <div class="pg-title">Order Tracking</div>
+      <div class="pg-sub">Buyer commitments, delivery status, invoices.</div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">All Orders</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-order-entry')"><i class="ti ti-plus"></i> New Order</button></div>
+        <div class="tbl-wrap"><table><thead><tr><th>Order #</th><th>Buyer</th><th>Produce</th><th>Qty</th><th>Unit</th><th>Value</th><th>Due</th><th>Status</th><th>Invoice</th></tr></thead><tbody>
+          <tr><td>ORD-041</td><td>Nakumatt Fresh</td><td>Tomato Grade A</td><td>200</td><td>crates</td><td>ZMW 7,200</td><td>22 May</td><td><span class="badge ba">Packing</span></td><td><span class="link">INV-041</span></td></tr>
+          <tr><td>ORD-042</td><td>City Market</td><td>Cabbage</td><td>80</td><td>bags</td><td>ZMW 5,200</td><td>23 May</td><td><span class="badge bg">Ready</span></td><td><span class="link">INV-042</span></td></tr>
+          <tr><td>ORD-043</td><td>Local Butcher</td><td>Goat ×3</td><td>3</td><td>head</td><td>ZMW 2,700</td><td>24 May</td><td><span class="badge bt">Confirmed</span></td><td><span class="link">INV-043</span></td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+
+    <!-- Generic empty panels for sub-routes not fully built -->
+    <div class="panel" id="panel-crop-blocks"><div class="pg-title">Farm Blocks</div><div class="pg-sub">Field layout and block management.</div><div class="alert alert-ok"><i class="ti ti-info-circle"></i>5 active blocks across 3.2 ha. Click a block below to view details.</div><div class="g3"><div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><div><div style="font-weight:600;">Block A</div><div style="font-size:11px;color:var(--tx4);">0.8 ha · Drip irrigated</div></div><span class="badge bt">Active</span></div><div style="font-size:13px;color:var(--tx3);">Tomato · Week 6 · pH 6.2</div></div><div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><div><div style="font-weight:600;">Block B</div><div style="font-size:11px;color:var(--tx4);">0.6 ha · Overhead</div></div><span class="badge bg">Harvest</span></div><div style="font-size:13px;color:var(--tx3);">Cabbage · Ready · pH 5.8</div></div><div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><div><div style="font-weight:600;">Block C</div><div style="font-size:11px;color:var(--tx4);">0.5 ha · Drip</div></div><span class="badge ba">Nursery</span></div><div style="font-size:13px;color:var(--tx3);">Pepper · Week 2 · pH 6.8</div></div><div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><div><div style="font-weight:600;">Block D</div><div style="font-size:11px;color:var(--tx4);">0.7 ha · Flood</div></div><span class="badge bg">Harvest</span></div><div style="font-size:13px;color:var(--tx3);">Onion · Harvest open</div></div><div class="card"><div style="display:flex;justify-content:space-between;margin-bottom:8px;"><div><div style="font-weight:600;">Block E</div><div style="font-size:11px;color:var(--tx4);">0.6 ha</div></div><span class="badge bx">Planned</span></div><div style="font-size:13px;color:var(--tx3);">Tomato · Jun planting</div></div><div class="card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:80px;cursor:pointer;" onclick="openModal('modal-block-entry')"><div style="text-align:center;color:var(--tx4);"><i class="ti ti-plus" style="font-size:22px;"></i><div style="font-size:12px;margin-top:4px;">Add Block</div></div></div></div></div>
+    <div class="panel" id="panel-crop-cycles"><div class="pg-title">Crop Cycles</div><div class="pg-sub">Full lifecycle from seed to sale.</div><div class="card"><div class="card-header"><span class="card-title">All Cycles</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-cycle-entry')"><i class="ti ti-plus"></i> New Cycle</button></div><div class="tbl-wrap"><table><thead><tr><th>Block</th><th>Crop</th><th>Planted</th><th>Population</th><th>Yield unit</th><th>Status</th><th>Days left</th><th>Proj. yield</th></tr></thead><tbody><tr><td>Block A</td><td>Tomato</td><td>8 Apr</td><td>14,400</td><td>Crates (30kg)</td><td><span class="badge bt">Field</span></td><td>38</td><td>~120 crates</td></tr><tr><td>Block B</td><td>Cabbage</td><td>15 Mar</td><td>16,667</td><td>Bags (50kg)</td><td><span class="badge bg">Harvest</span></td><td>0</td><td>48 bags ✓</td></tr><tr><td>Block C</td><td>Pepper</td><td>12 May</td><td>12,500</td><td>Kg</td><td><span class="badge ba">Nursery</span></td><td>51</td><td>~1,800 kg</td></tr><tr><td>Block D</td><td>Onion</td><td>20 Feb</td><td>140,000</td><td>Bags (25kg)</td><td><span class="badge bg">Harvest</span></td><td>0</td><td>48 bags ✓</td></tr><tr><td>Block E</td><td>Tomato</td><td>—</td><td>—</td><td>Crates (30kg)</td><td><span class="badge bx">Planned</span></td><td>72</td><td>~100 crates</td></tr></tbody></table></div></div></div>
+    <div class="panel" id="panel-crop-spray"><div class="pg-title">Spray Schedule</div><div class="alert alert-err"><i class="ti ti-alert-triangle"></i>Block A fungicide overdue 3 days.</div><div class="card" style="margin-top:12px;"><div class="card-header"><span class="card-title">Block A — Tomato</span><button class="btn btn-sm" onclick="openModal('modal-spray-entry')"><i class="ti ti-plus"></i> Log Application</button></div><div class="tbl-wrap"><table><thead><tr><th>Week</th><th>Type</th><th>Product</th><th>Rate</th><th>Due</th><th>Done</th></tr></thead><tbody><tr><td>Wk 5</td><td>Foliar</td><td>MAP 12:61:0</td><td>2g/L</td><td>08 May</td><td><span class="badge bg">Done</span></td></tr><tr style="background:var(--r100);"><td>Wk 6</td><td>Fungicide</td><td>Mancozeb 80WP</td><td>2g/L</td><td>15 May</td><td><span class="badge br">Overdue</span></td></tr><tr><td>Wk 7</td><td>Insecticide</td><td>Imidacloprid</td><td>1ml/L</td><td>22 May</td><td><span class="badge bx">Pending</span></td></tr></tbody></table></div></div></div>
+    <div class="panel" id="panel-crop-scanner"><div class="pg-title">AI Leaf Scanner</div><div class="pg-sub">Upload a leaf photo — AI diagnoses in under 3 seconds.</div><div class="g2"><div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:240px;border-style:dashed;cursor:pointer;"><i class="ti ti-camera" style="font-size:38px;color:var(--tx4);margin-bottom:10px;"></i><div style="font-size:14px;font-weight:600;margin-bottom:4px;">Upload or Capture Leaf</div><div style="font-size:12px;color:var(--tx4);margin-bottom:12px;">AI analyses in under 3s</div><button class="btn btn-primary"><i class="ti ti-upload"></i> Choose File</button></div><div class="card"><div class="card-title" style="margin-bottom:12px;">Recent Scans</div><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Block</th><th>Crop</th><th>Diagnosis</th><th>Severity</th></tr></thead><tbody><tr><td>14 May</td><td>Block A</td><td>Tomato</td><td>Early blight</td><td><span class="badge ba">Medium</span></td></tr><tr><td>12 May</td><td>Block B</td><td>Cabbage</td><td>Aphid damage</td><td><span class="badge ba">Medium</span></td></tr><tr><td>05 May</td><td>Block A</td><td>Tomato</td><td>Healthy</td><td><span class="badge bg">Clear</span></td></tr></tbody></table></div></div></div></div>
+    <div class="panel" id="panel-crop-soil"><div class="pg-title">Soil Reports</div><div class="pg-sub">Upload lab reports — AI parses and generates nutrition calendar. ZMW 70/report.</div><div class="g2"><div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:180px;border-style:dashed;cursor:pointer;"><i class="ti ti-upload" style="font-size:30px;color:var(--tx4);margin-bottom:8px;"></i><div style="font-size:14px;font-weight:600;margin-bottom:4px;">Upload Lab Report</div><div style="font-size:12px;color:var(--tx4);">PDF or image</div></div><div class="card"><div class="tbl-wrap"><table><thead><tr><th>Block</th><th>Date</th><th>pH</th><th>N</th><th>P</th><th>K</th></tr></thead><tbody><tr><td>Block A</td><td>Feb 2025</td><td>6.2</td><td>Med</td><td>Low</td><td>High</td></tr><tr><td>Block B</td><td>Feb 2025</td><td>5.8</td><td>High</td><td>Med</td><td>Med</td></tr><tr><td>Block C</td><td>Mar 2025</td><td>6.8</td><td>Low</td><td>Med</td><td>Low</td></tr></tbody></table></div></div></div></div>
+    <div class="panel" id="panel-lv-feed"><div class="pg-title">Feed & Nutrition</div><div class="pg-sub">Daily feed programme and cost tracking per species.</div><div class="card"><div class="card-header"><span class="card-title">Feed Programme</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-feed-entry')"><i class="ti ti-plus"></i> Log Feed</button></div><div class="tbl-wrap"><table><thead><tr><th>Species</th><th>Feed type</th><th>Qty/day</th><th>Cost/day</th><th>Stock left</th><th>Status</th></tr></thead><tbody><tr><td>🐄 Cattle (12)</td><td>Hay + supplement</td><td>2 kg supp</td><td>ZMW 24</td><td>60 kg hay</td><td><span class="badge bg">OK</span></td></tr><tr><td>🐐 Goats (28)</td><td>Goat pellets</td><td>0.3 kg/head</td><td>ZMW 34</td><td>22 kg</td><td><span class="badge bg">OK</span></td></tr><tr><td>🐓 Layers (60)</td><td>Layer mash 16%</td><td>120g/bird</td><td>ZMW 36</td><td style="color:var(--r600);font-weight:600;">12 kg ⚠</td><td><span class="badge br">Reorder Now</span></td></tr><tr><td>🐓 Broilers (20)</td><td>Broiler finisher</td><td>150g/bird</td><td>ZMW 18</td><td>8 kg</td><td><span class="badge ba">Low</span></td></tr><tr><td>🐷 Pigs (7)</td><td>Grower meal</td><td>1.5 kg/head</td><td>ZMW 16</td><td>30 kg</td><td><span class="badge bg">OK</span></td></tr></tbody></table></div></div></div>
+    <div class="panel" id="panel-lv-breeding"><div class="pg-title">Breeding Records</div><div class="g4" style="margin-bottom:14px;"><div class="stat-card"><div class="stat-lbl">Pregnant</div><div class="stat-val">3</div><div class="stat-sub">1 cow · 2 sows</div></div><div class="stat-card"><div class="stat-lbl">Next Birth</div><div class="stat-val">~18 Jun</div><div class="stat-sub">CT-004 Friesian</div></div><div class="stat-card"><div class="stat-lbl">Born this season</div><div class="stat-val">14</div></div><div class="stat-card"><div class="stat-lbl">Survival rate</div><div class="stat-val">93%</div><div class="stat-trend up"><i class="ti ti-trending-up"></i>+3%</div></div></div><div class="card"><div class="card-header"><span class="card-title">Pregnancy Tracker</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-breed-entry')"><i class="ti ti-plus"></i> Log Mating</button></div><div class="tbl-wrap"><table><thead><tr><th>Animal</th><th>Species</th><th>Mated</th><th>Expected birth</th><th>Progress</th></tr></thead><tbody><tr><td>CT-004</td><td>🐄 Friesian</td><td>01 Jan</td><td>~18 Jun</td><td><div class="pb" style="width:160px;"><div class="pf" style="width:82%;"></div></div></td></tr><tr><td>PG-001</td><td>🐷 Sow</td><td>10 Apr</td><td>~02 Aug</td><td><div class="pb" style="width:160px;"><div class="pf" style="width:35%;"></div></div></td></tr><tr><td>PG-002</td><td>🐷 Sow</td><td>22 Apr</td><td>~14 Aug</td><td><div class="pb" style="width:160px;"><div class="pf" style="width:24%;"></div></div></td></tr></tbody></table></div></div></div>
+    <div class="panel" id="panel-lv-sales"><div class="pg-title">Livestock Sales</div><div class="card"><div class="card-header"><span class="card-title">Sales Records</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-lvsale-entry')"><i class="ti ti-plus"></i> Record Sale</button></div><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Animal(s)</th><th>Species</th><th>Qty</th><th>Weight</th><th>Buyer</th><th>Price</th><th>Revenue</th></tr></thead><tbody><tr><td>10 May</td><td>GT-012–014</td><td>🐐 Goat</td><td>3</td><td>28–32 kg</td><td>Local butcher</td><td>ZMW 900/hd</td><td style="font-weight:600;color:var(--g600);">ZMW 2,700</td></tr><tr><td>05 May</td><td>Broiler batch</td><td>🐓 Chicken</td><td>20</td><td>2.1 kg avg</td><td>City Market</td><td>ZMW 55/bird</td><td style="font-weight:600;color:var(--g600);">ZMW 1,100</td></tr></tbody></table></div></div></div>
+    <div class="panel" id="panel-acc-income"><div class="pg-title">Income</div><div class="pg-sub">All revenue sources.</div><div class="card"><div class="card-header"><span class="card-title">Income Records</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-ledger-entry')"><i class="ti ti-plus"></i> Add Income</button></div><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Source</th><th>Category</th><th>Amount</th></tr></thead><tbody><tr><td>15 May</td><td>Onion sale</td><td>Produce</td><td style="color:var(--g600);font-weight:600;">+ZMW 6,840</td></tr><tr><td>12 May</td><td>Milk sales</td><td>Livestock</td><td style="color:var(--g600);font-weight:600;">+ZMW 513</td></tr><tr><td>10 May</td><td>Goat sale ×3</td><td>Livestock</td><td style="color:var(--g600);font-weight:600;">+ZMW 2,700</td></tr></tbody></table></div></div></div>
+    <div class="panel" id="panel-acc-expenses"><div class="pg-title">Expenses</div><div class="pg-sub">All outgoing costs.</div><div class="card"><div class="card-header"><span class="card-title">Expense Records</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-ledger-entry')"><i class="ti ti-plus"></i> Add Expense</button></div><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr></thead><tbody><tr><td>14 May</td><td>Payroll May wk 2</td><td>Labour</td><td style="color:var(--r600);font-weight:600;">−ZMW 7,320</td></tr><tr><td>10 May</td><td>Mancozeb 80WP</td><td>Chemicals</td><td style="color:var(--r600);font-weight:600;">−ZMW 840</td></tr><tr><td>09 May</td><td>Layer mash</td><td>Feed</td><td style="color:var(--r600);font-weight:600;">−ZMW 600</td></tr></tbody></table></div></div></div>
+    <div class="panel" id="panel-acc-budget"><div class="pg-title">Budget vs Actual</div><div class="pg-sub">Track spending against your seasonal budget.</div><div class="card"><div class="tbl-wrap"><table><thead><tr><th>Category</th><th>Budget</th><th>Spent</th><th>Remaining</th><th>%</th></tr></thead><tbody><tr><td>Labour</td><td>ZMW 9,000</td><td>ZMW 8,640</td><td style="color:var(--g600);">ZMW 360</td><td>96%</td></tr><tr><td>Chemicals</td><td>ZMW 3,500</td><td>ZMW 2,840</td><td style="color:var(--g600);">ZMW 660</td><td>81%</td></tr><tr><td>Fertiliser</td><td>ZMW 4,000</td><td>ZMW 3,200</td><td style="color:var(--g600);">ZMW 800</td><td>80%</td></tr><tr><td>Feed</td><td>ZMW 5,000</td><td>ZMW 4,600</td><td style="color:var(--g600);">ZMW 400</td><td>92%</td></tr><tr><td>Vet costs</td><td>ZMW 2,000</td><td>ZMW 2,040</td><td style="color:var(--r600);">−ZMW 40</td><td><span style="color:var(--r600);">102%</span></td></tr></tbody></table></div></div></div>
+    <div class="panel" id="panel-stock-chem"><div class="pg-title">Chemicals</div><div class="card"><div class="card-header"><span class="card-title">Chemical Inventory</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-stock-entry')"><i class="ti ti-plus"></i> Add</button></div><div class="tbl-wrap"><table><thead><tr><th>Product</th><th>Type</th><th>In Stock</th><th>Reorder Level</th><th>Status</th></tr></thead><tbody><tr><td>Mancozeb 80WP</td><td>Fungicide</td><td>1.2 kg</td><td>5 kg</td><td><span class="badge br">Reorder Now</span></td></tr><tr><td>Azoxystrobin</td><td>Fungicide</td><td>0.8 L</td><td>1 L</td><td><span class="badge ba">Low</span></td></tr><tr><td>Imidacloprid</td><td>Insecticide</td><td>2 L</td><td>1 L</td><td><span class="badge bg">OK</span></td></tr></tbody></table></div></div></div>
+    <div class="panel" id="panel-stock-fert"><div class="pg-title">Fertilisers</div><div class="card"><div class="card-header"><span class="card-title">Fertiliser Stock</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-stock-entry')"><i class="ti ti-plus"></i> Add</button></div><div class="tbl-wrap"><table><thead><tr><th>Product</th><th>In Stock</th><th>Reorder Level</th><th>Status</th></tr></thead><tbody><tr><td>CAN 26%N</td><td>80 kg</td><td>50 kg</td><td><span class="badge bg">OK</span></td></tr><tr><td>NPK 10:20:10</td><td>120 kg</td><td>50 kg</td><td><span class="badge bg">OK</span></td></tr><tr><td>MAP 12:61:0</td><td>4 kg</td><td>5 kg</td><td><span class="badge ba">Low</span></td></tr></tbody></table></div></div></div>
+    <div class="panel" id="panel-stock-feed"><div class="pg-title">Livestock Feed Stock</div><div class="card"><div class="card-header"><span class="card-title">Feed Inventory</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-stock-entry')"><i class="ti ti-plus"></i> Add</button></div><div class="tbl-wrap"><table><thead><tr><th>Feed</th><th>Species</th><th>In Stock</th><th>Status</th></tr></thead><tbody><tr><td>Layer mash 16%</td><td>Chickens</td><td style="color:var(--r600);font-weight:600;">12 kg</td><td><span class="badge br">Reorder Now</span></td></tr><tr><td>Broiler finisher</td><td>Chickens</td><td>8 kg</td><td><span class="badge ba">Low</span></td></tr><tr><td>Goat pellets</td><td>Goats</td><td>22 kg</td><td><span class="badge bg">OK</span></td></tr><tr><td>Pig grower meal</td><td>Pigs</td><td>30 kg</td><td><span class="badge bg">OK</span></td></tr></tbody></table></div></div></div>
+    <div class="panel" id="panel-stock-equip"><div class="pg-title">Equipment Register</div><div class="card"><div class="card-header"><span class="card-title">Farm Equipment</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-stock-entry')"><i class="ti ti-plus"></i> Add</button></div><div class="tbl-wrap"><table><thead><tr><th>Item</th><th>Condition</th><th>Last service</th><th>Notes</th></tr></thead><tbody><tr><td>Knapsack sprayer ×3</td><td><span class="badge bg">Good</span></td><td>Jan 2025</td><td>Seals replaced</td></tr><tr><td>Irrigation pump (2HP)</td><td><span class="badge bg">Good</span></td><td>Feb 2025</td><td>Running well</td></tr><tr><td>Pickup truck</td><td><span class="badge ba">Service due</span></td><td>Nov 2024</td><td>Due 5,000km service</td></tr><tr><td>Tractor (rented)</td><td><span class="badge bx">Rented</span></td><td>—</td><td>ZMW 800/day hire</td></tr></tbody></table></div></div></div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- ══════════════ MODALS ══════════════ -->
+
+<!-- HARVEST ENTRY -->
+<div class="modal-bg" id="modal-harvest">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Log Harvest</div><button class="modal-close" onclick="closeModal('modal-harvest')"><i class="ti ti-x"></i></button></div>
+    <div class="fr fr-2"><div class="fg"><label>Date</label><input type="date"></div><div class="fg"><label>Block</label><select><option>Block A</option><option>Block B</option><option>Block C</option><option>Block D</option><option>Block E</option></select></div></div>
+    <div class="fg"><label>Crop</label><select><option>Tomato</option><option>Cabbage</option><option>Pepper</option><option>Onion</option><option>Maize</option><option>Groundnut</option></select></div>
+    <div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Yield Unit</div>
+    <div class="unit-toggle" id="harvest-units">
+      <button class="unit-btn active" onclick="setHarvestUnit('kg',this)">Kg</button>
+      <button class="unit-btn" onclick="setHarvestUnit('crate30',this)">Crates (30 kg)</button>
+      <button class="unit-btn" onclick="setHarvestUnit('bag50',this)">Bags (50 kg)</button>
+      <button class="unit-btn" onclick="setHarvestUnit('bag25',this)">Bags (25 kg)</button>
+      <button class="unit-btn" onclick="setHarvestUnit('box10',this)">Boxes (10 kg)</button>
+    </div>
+    <div class="fr fr-2">
+      <div class="fg"><label id="h-qty-lbl">Quantity harvested</label><input type="number" id="h-qty" placeholder="e.g. 61" oninput="calcHarvest()"></div>
+      <div class="fg"><label id="h-kg-lbl">Kg equivalent</label><input type="number" id="h-kg" readonly style="background:var(--surf2);" placeholder="auto-calculated"></div>
+    </div>
+    <div class="fr fr-3">
+      <div class="fg"><label>Grade A (kg)</label><input type="number" id="h-a" placeholder="e.g. 1500"></div>
+      <div class="fg"><label>Grade B (kg)</label><input type="number" id="h-b" placeholder="e.g. 280"></div>
+      <div class="fg"><label>Waste (kg)</label><input type="number" id="h-w" placeholder="e.g. 60"></div>
+    </div>
+    <div class="fr fr-2"><div class="fg"><label>Buyer</label><input type="text" placeholder="e.g. Nakumatt Fresh"></div><div class="fg"><label>Price per kg (ZMW)</label><input type="number" id="h-price" placeholder="e.g. 5.50" oninput="calcHarvest()"></div></div>
+    <div id="h-revenue-preview" style="display:none;" class="rbox"><div style="display:flex;justify-content:space-between;font-size:13px;"><span>Estimated revenue</span><span id="h-rev" style="font-family:var(--font-display);font-size:18px;color:var(--g700);"></span></div></div>
+    <div class="fg"><label>Notes</label><textarea placeholder="Any notes about this harvest..."></textarea></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-harvest')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-harvest')"><i class="ti ti-check"></i> Save Harvest</button></div>
+  </div>
+</div>
+
+<!-- LEDGER ENTRY -->
+<div class="modal-bg" id="modal-ledger-entry">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add Transaction</div><button class="modal-close" onclick="closeModal('modal-ledger-entry')"><i class="ti ti-x"></i></button></div>
+    <div class="fr fr-2"><div class="fg"><label>Date</label><input type="date"></div><div class="fg"><label>Type</label><select><option>Income</option><option>Expense</option></select></div></div>
+    <div class="fg"><label>Description</label><input type="text" placeholder="e.g. Tomato sale — Nakumatt"></div>
+    <div class="fr fr-2"><div class="fg"><label>Category</label><select><option>Produce Sales</option><option>Livestock Sale</option><option>Labour</option><option>Chemicals</option><option>Fertiliser</option><option>Feed</option><option>Vet & Health</option><option>Irrigation</option><option>Equipment</option><option>Fuel</option><option>Other</option></select></div><div class="fg"><label>Source</label><select><option>Crops</option><option>Livestock</option><option>Dairy</option><option>Eggs</option><option>General</option></select></div></div>
+    <div class="fr fr-2"><div class="fg"><label>Amount (ZMW)</label><input type="number" placeholder="e.g. 6840"></div><div class="fg"><label>Block / Pen (optional)</label><select><option>All</option><option>Block A</option><option>Block B</option><option>Block C</option><option>Block D</option><option>Block E</option><option>Livestock — Cattle</option><option>Livestock — Goats</option><option>Livestock — Pigs</option><option>Livestock — Chickens</option></select></div></div>
+    <div class="fg"><label>Receipt / Reference</label><input type="text" placeholder="e.g. INV-041 or receipt number"></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-ledger-entry')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-ledger-entry')"><i class="ti ti-check"></i> Save Entry</button></div>
+  </div>
+</div>
+
+<!-- STOCK ENTRY -->
+<div class="modal-bg" id="modal-stock-entry">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add / Update Stock Item</div><button class="modal-close" onclick="closeModal('modal-stock-entry')"><i class="ti ti-x"></i></button></div>
+    <div class="fr fr-2"><div class="fg"><label>Item Name</label><input type="text" placeholder="e.g. Mancozeb 80WP"></div><div class="fg"><label>Category</label><select><option>Fungicide</option><option>Insecticide</option><option>Herbicide</option><option>Fertiliser</option><option>Feed</option><option>Vaccine</option><option>Vet drug</option><option>Irrigation</option><option>Equipment</option><option>Seed</option><option>Other</option></select></div></div>
+    <div class="fr fr-2"><div class="fg"><label>Department</label><select><option>Crops</option><option>Livestock</option><option>General</option></select></div><div class="fg"><label>Unit of measure</label><select><option>kg</option><option>g</option><option>L</option><option>ml</option><option>doses</option><option>metres</option><option>pieces</option></select></div></div>
+    <div class="fr fr-3"><div class="fg"><label>Quantity in stock</label><input type="number" placeholder="e.g. 5"></div><div class="fg"><label>Reorder level</label><input type="number" placeholder="e.g. 10"></div><div class="fg"><label>Unit cost (ZMW)</label><input type="number" placeholder="e.g. 168"></div></div>
+    <div class="fg"><label>Supplier (optional)</label><input type="text" placeholder="e.g. Agrimart Lusaka"></div>
+    <div class="fg"><label>Notes / Expiry</label><input type="text" placeholder="e.g. Expires Dec 2025"></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-stock-entry')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-stock-entry')"><i class="ti ti-check"></i> Save Item</button></div>
+  </div>
+</div>
+
+<!-- ANIMAL ENTRY -->
+<div class="modal-bg" id="modal-animal-entry">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add Animal to Herd</div><button class="modal-close" onclick="closeModal('modal-animal-entry')"><i class="ti ti-x"></i></button></div>
+    <div class="fr fr-2"><div class="fg"><label>Tag / ID</label><input type="text" placeholder="e.g. CT-013"></div><div class="fg"><label>Species</label><select><option>Cattle</option><option>Goat</option><option>Pig</option><option>Chicken</option><option>Sheep</option><option>Other</option></select></div></div>
+    <div class="fr fr-2"><div class="fg"><label>Breed</label><input type="text" placeholder="e.g. Brahman cross"></div><div class="fg"><label>Sex</label><select><option>Male</option><option>Female</option><option>Castrated</option></select></div></div>
+    <div class="fr fr-3"><div class="fg"><label>Date of birth</label><input type="date"></div><div class="fg"><label>Current weight (kg)</label><input type="number" placeholder="e.g. 45"></div><div class="fg"><label>Purpose</label><select><option>Beef</option><option>Dairy</option><option>Breeding</option><option>Eggs</option><option>Pork</option><option>Meat</option></select></div></div>
+    <div class="fr fr-2"><div class="fg"><label>Acquisition</label><select><option>Born on farm</option><option>Purchased</option></select></div><div class="fg"><label>Purchase cost (ZMW)</label><input type="number" placeholder="e.g. 4500"></div></div>
+    <div class="fg"><label>Health notes</label><textarea placeholder="Any health history or notes..."></textarea></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-animal-entry')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-animal-entry')"><i class="ti ti-check"></i> Add Animal</button></div>
+  </div>
+</div>
+
+<!-- TREATMENT ENTRY -->
+<div class="modal-bg" id="modal-treatment-entry">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Log Treatment / Vet Visit</div><button class="modal-close" onclick="closeModal('modal-treatment-entry')"><i class="ti ti-x"></i></button></div>
+    <div class="fr fr-2"><div class="fg"><label>Date</label><input type="date"></div><div class="fg"><label>Animal(s)</label><input type="text" placeholder="e.g. GT-008, GT-009"></div></div>
+    <div class="fr fr-2"><div class="fg"><label>Species</label><select><option>Cattle</option><option>Goat</option><option>Pig</option><option>Chicken</option></select></div><div class="fg"><label>Condition / Diagnosis</label><input type="text" placeholder="e.g. Pasteurellosis"></div></div>
+    <div class="fr fr-2"><div class="fg"><label>Drug / Treatment</label><input type="text" placeholder="e.g. Oxytetracycline"></div><div class="fg"><label>Dosage</label><input type="text" placeholder="e.g. 10mg/kg IM"></div></div>
+    <div class="fr fr-2"><div class="fg"><label>Cost (ZMW)</label><input type="number" placeholder="e.g. 180"></div><div class="fg"><label>Next review date</label><input type="date"></div></div>
+    <div class="fg"><label>Vet name (optional)</label><input type="text" placeholder="e.g. Dr Banda"></div>
+    <div class="fg"><label>Notes / Outcome</label><textarea placeholder="Observations, outcome, follow-up..."></textarea></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-treatment-entry')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-treatment-entry')"><i class="ti ti-check"></i> Save Record</button></div>
+  </div>
+</div>
+
+<!-- VACCINATION ENTRY -->
+<div class="modal-bg" id="modal-vacc-entry">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Log Vaccination</div><button class="modal-close" onclick="closeModal('modal-vacc-entry')"><i class="ti ti-x"></i></button></div>
+    <div class="fr fr-2"><div class="fg"><label>Date</label><input type="date"></div><div class="fg"><label>Species</label><select><option>Cattle</option><option>Goats</option><option>Pigs</option><option>Chickens</option><option>All</option></select></div></div>
+    <div class="fr fr-2"><div class="fg"><label>Vaccine name</label><input type="text" placeholder="e.g. FMD Vaccine"></div><div class="fg"><label>Disease target</label><input type="text" placeholder="e.g. Foot & Mouth"></div></div>
+    <div class="fr fr-3"><div class="fg"><label>Head vaccinated</label><input type="number" placeholder="e.g. 12"></div><div class="fg"><label>Dose / method</label><input type="text" placeholder="e.g. 2ml IM"></div><div class="fg"><label>Cost (ZMW)</label><input type="number" placeholder="e.g. 240"></div></div>
+    <div class="fg"><label>Next due date</label><input type="date"></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-vacc-entry')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-vacc-entry')"><i class="ti ti-check"></i> Save</button></div>
+  </div>
+</div>
+
+<!-- STAFF ENTRY -->
+<div class="modal-bg" id="modal-staff-entry">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Add Staff Member</div><button class="modal-close" onclick="closeModal('modal-staff-entry')"><i class="ti ti-x"></i></button></div>
+    <div class="fr fr-2"><div class="fg"><label>Full Name</label><input type="text" placeholder="e.g. Joseph Banda"></div><div class="fg"><label>Role</label><input type="text" placeholder="e.g. Irrigator"></div></div>
+    <div class="fr fr-2"><div class="fg"><label>Department</label><select><option>Crops</option><option>Livestock</option><option>General / All</option><option>Driver</option><option>Security</option></select></div><div class="fg"><label>Contract type</label><select><option>Permanent monthly</option><option>Seasonal</option><option>Casual / Daily</option></select></div></div>
+    <div class="fr fr-2"><div class="fg"><label>Monthly salary (ZMW)</label><input type="number" placeholder="e.g. 1200"></div><div class="fg"><label>Start date</label><input type="date"></div></div>
+    <div class="fg"><label>Phone number</label><input type="text" placeholder="e.g. +260 9xx xxx xxx"></div>
+    <div class="fg"><label>NRC / ID number</label><input type="text" placeholder="For NAPSA / records"></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-staff-entry')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-staff-entry')"><i class="ti ti-check"></i> Add Staff</button></div>
+  </div>
+</div>
+
+<!-- ORDER ENTRY -->
+<div class="modal-bg" id="modal-order-entry">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">New Order</div><button class="modal-close" onclick="closeModal('modal-order-entry')"><i class="ti ti-x"></i></button></div>
+    <div class="fr fr-2"><div class="fg"><label>Buyer name</label><input type="text" placeholder="e.g. Nakumatt Fresh"></div><div class="fg"><label>Contact number</label><input type="text" placeholder="+260 9xx xxx xxx"></div></div>
+    <div class="fg"><label>Produce</label><select><option>Tomato — Grade A</option><option>Tomato — Mixed</option><option>Cabbage</option><option>Onion</option><option>Pepper</option><option>Goat</option><option>Chicken (live)</option><option>Eggs</option><option>Milk</option><option>Pork</option></select></div>
+    <div class="fr fr-2"><div class="fg"><label>Quantity</label><input type="number" placeholder="e.g. 200"></div><div class="fg"><label>Unit</label><select><option>kg</option><option>crates (30kg)</option><option>bags (50kg)</option><option>bags (25kg)</option><option>boxes (10kg)</option><option>head</option><option>birds</option><option>eggs</option><option>litres</option></select></div></div>
+    <div class="fr fr-2"><div class="fg"><label>Agreed price (ZMW)</label><input type="number" placeholder="Per unit"></div><div class="fg"><label>Delivery date</label><input type="date"></div></div>
+    <div class="fg"><label>Delivery address</label><input type="text" placeholder="e.g. Showgrounds market, Lusaka"></div>
+    <div class="fg"><label>Notes</label><textarea placeholder="Special requirements, grade spec..."></textarea></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-order-entry')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-order-entry')"><i class="ti ti-check"></i> Create Order</button></div>
+  </div>
+</div>
+
+<!-- QUICK ENTRY -->
+<div class="modal-bg" id="modal-quick-entry">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Quick Log</div><button class="modal-close" onclick="closeModal('modal-quick-entry')"><i class="ti ti-x"></i></button></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;">
+      <div style="padding:14px;border:1px solid var(--bord);border-radius:var(--r12);cursor:pointer;text-align:center;transition:all .13s;" onclick="closeModal('modal-quick-entry');openModal('modal-harvest')" onmouseover="this.style.borderColor='var(--g500)'" onmouseout="this.style.borderColor='var(--bord)'"><i class="ti ti-basket" style="font-size:24px;color:var(--g600);"></i><div style="font-size:13px;font-weight:600;margin-top:6px;">Log Harvest</div><div style="font-size:11px;color:var(--tx4);">Crates, bags, kg</div></div>
+      <div style="padding:14px;border:1px solid var(--bord);border-radius:var(--r12);cursor:pointer;text-align:center;transition:all .13s;" onclick="closeModal('modal-quick-entry');openModal('modal-ledger-entry')" onmouseover="this.style.borderColor='var(--g500)'" onmouseout="this.style.borderColor='var(--bord)'"><i class="ti ti-receipt" style="font-size:24px;color:var(--g600);"></i><div style="font-size:13px;font-weight:600;margin-top:6px;">Add Transaction</div><div style="font-size:11px;color:var(--tx4);">Income or expense</div></div>
+      <div style="padding:14px;border:1px solid var(--bord);border-radius:var(--r12);cursor:pointer;text-align:center;transition:all .13s;" onclick="closeModal('modal-quick-entry');openModal('modal-treatment-entry')" onmouseover="this.style.borderColor='var(--g500)'" onmouseout="this.style.borderColor='var(--bord)'"><i class="ti ti-stethoscope" style="font-size:24px;color:var(--br600);"></i><div style="font-size:13px;font-weight:600;margin-top:6px;">Log Treatment</div><div style="font-size:11px;color:var(--tx4);">Livestock health</div></div>
+      <div style="padding:14px;border:1px solid var(--bord);border-radius:var(--r12);cursor:pointer;text-align:center;transition:all .13s;" onclick="closeModal('modal-quick-entry');openModal('modal-stock-entry')" onmouseover="this.style.borderColor='var(--g500)'" onmouseout="this.style.borderColor='var(--bord)'"><i class="ti ti-package" style="font-size:24px;color:var(--a600);"></i><div style="font-size:13px;font-weight:600;margin-top:6px;">Update Stock</div><div style="font-size:11px;color:var(--tx4);">Add or reorder</div></div>
+      <div style="padding:14px;border:1px solid var(--bord);border-radius:var(--r12);cursor:pointer;text-align:center;transition:all .13s;" onclick="closeModal('modal-quick-entry');openModal('modal-order-entry')" onmouseover="this.style.borderColor='var(--g500)'" onmouseout="this.style.borderColor='var(--bord)'"><i class="ti ti-truck" style="font-size:24px;color:var(--t600);"></i><div style="font-size:13px;font-weight:600;margin-top:6px;">New Order</div><div style="font-size:11px;color:var(--tx4);">Buyer commitment</div></div>
+      <div style="padding:14px;border:1px solid var(--bord);border-radius:var(--r12);cursor:pointer;text-align:center;transition:all .13s;" onclick="closeModal('modal-quick-entry');openModal('modal-animal-entry')" onmouseover="this.style.borderColor='var(--g500)'" onmouseout="this.style.borderColor='var(--bord)'"><i class="ti ti-horse" style="font-size:24px;color:var(--g600);"></i><div style="font-size:13px;font-weight:600;margin-top:6px;">Add Animal</div><div style="font-size:11px;color:var(--tx4);">Any species</div></div>
+    </div>
+    <div style="padding-top:10px;border-top:1px solid var(--bord);text-align:center;"><button class="btn" onclick="closeModal('modal-quick-entry')">Cancel</button></div>
+  </div>
+</div>
+
+<!-- PRICE ENTRY -->
+<div class="modal-bg" id="modal-price-entry">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Update Market Price</div><button class="modal-close" onclick="closeModal('modal-price-entry')"><i class="ti ti-x"></i></button></div>
+    <div class="fg"><label>Produce</label><select><option>Tomato</option><option>Cabbage</option><option>Onion</option><option>Pepper</option><option>Maize</option><option>Goat</option><option>Chicken</option><option>Eggs</option><option>Milk</option><option>Pork</option></select></div>
+    <div class="fr fr-2"><div class="fg"><label>Unit</label><select><option>Per kg</option><option>Per crate (30kg)</option><option>Per bag (50kg)</option><option>Per bag (25kg)</option><option>Per box (10kg)</option><option>Per head</option><option>Per egg</option><option>Per litre</option></select></div><div class="fg"><label>Market price (ZMW)</label><input type="number" placeholder="e.g. 5.50"></div></div>
+    <div class="fr fr-2"><div class="fg"><label>Market / Source</label><input type="text" placeholder="e.g. Soweto Market"></div><div class="fg"><label>Date observed</label><input type="date"></div></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('modal-price-entry')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-price-entry')"><i class="ti ti-check"></i> Update</button></div>
+  </div>
+</div>
+
+<!-- Remaining small modals (block, cycle, spray, feed, breed, lvsale) -->
+<div class="modal-bg" id="modal-block-entry"><div class="modal"><div class="modal-header"><div class="modal-title">Add Farm Block</div><button class="modal-close" onclick="closeModal('modal-block-entry')"><i class="ti ti-x"></i></button></div><div class="fr fr-2"><div class="fg"><label>Block name</label><input type="text" placeholder="e.g. Block F"></div><div class="fg"><label>Area (ha)</label><input type="number" step="0.1" placeholder="e.g. 0.5"></div></div><div class="fr fr-2"><div class="fg"><label>Irrigation type</label><select><option>Drip</option><option>Overhead sprinkler</option><option>Flood/furrow</option><option>Rain-fed</option></select></div><div class="fg"><label>Soil type</label><select><option>Sandy loam</option><option>Clay loam</option><option>Loam</option><option>Sandy</option><option>Clay</option></select></div></div><div class="fg"><label>GPS / Location notes</label><input type="text" placeholder="e.g. North field, near borehole"></div><div class="modal-footer"><button class="btn" onclick="closeModal('modal-block-entry')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-block-entry')"><i class="ti ti-check"></i> Add Block</button></div></div></div>
+<div class="modal-bg" id="modal-cycle-entry"><div class="modal"><div class="modal-header"><div class="modal-title">New Crop Cycle</div><button class="modal-close" onclick="closeModal('modal-cycle-entry')"><i class="ti ti-x"></i></button></div><div class="fr fr-2"><div class="fg"><label>Block</label><select><option>Block A</option><option>Block B</option><option>Block C</option><option>Block D</option><option>Block E</option></select></div><div class="fg"><label>Crop</label><select><option>Tomato</option><option>Cabbage</option><option>Pepper</option><option>Onion</option><option>Maize</option><option>Groundnut</option><option>Strawberry</option><option>Ginger</option></select></div></div><div class="fr fr-2"><div class="fg"><label>Planting date</label><input type="date"></div><div class="fg"><label>Yield unit</label><select><option>kg</option><option>Crates (30kg)</option><option>Bags (50kg)</option><option>Bags (25kg)</option><option>Boxes (10kg)</option></select></div></div><div class="fr fr-2"><div class="fg"><label>Plant population</label><input type="number" placeholder="From calculator"></div><div class="fg"><label>Target yield</label><input type="number" placeholder="In selected units"></div></div><div class="modal-footer"><button class="btn" onclick="closeModal('modal-cycle-entry')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-cycle-entry')"><i class="ti ti-check"></i> Create Cycle</button></div></div></div>
+<div class="modal-bg" id="modal-spray-entry"><div class="modal"><div class="modal-header"><div class="modal-title">Log Spray Application</div><button class="modal-close" onclick="closeModal('modal-spray-entry')"><i class="ti ti-x"></i></button></div><div class="fr fr-2"><div class="fg"><label>Date</label><input type="date"></div><div class="fg"><label>Block</label><select><option>Block A</option><option>Block B</option><option>Block C</option><option>Block D</option><option>Block E</option></select></div></div><div class="fr fr-2"><div class="fg"><label>Product used</label><input type="text" placeholder="e.g. Mancozeb 80WP"></div><div class="fg"><label>Rate</label><input type="text" placeholder="e.g. 2g/L"></div></div><div class="fr fr-2"><div class="fg"><label>Volume mixed (L)</label><input type="number" placeholder="e.g. 20"></div><div class="fg"><label>Cost (ZMW)</label><input type="number" placeholder="e.g. 336"></div></div><div class="fg"><label>Weather at time of spray</label><select><option>Sunny · No wind</option><option>Overcast · Calm</option><option>Windy — not ideal</option><option>Before rain risk</option></select></div><div class="fg"><label>Notes</label><textarea placeholder="Any observations..."></textarea></div><div class="modal-footer"><button class="btn" onclick="closeModal('modal-spray-entry')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-spray-entry')"><i class="ti ti-check"></i> Log</button></div></div></div>
+<div class="modal-bg" id="modal-feed-entry"><div class="modal"><div class="modal-header"><div class="modal-title">Log Feed</div><button class="modal-close" onclick="closeModal('modal-feed-entry')"><i class="ti ti-x"></i></button></div><div class="fr fr-2"><div class="fg"><label>Date</label><input type="date"></div><div class="fg"><label>Species</label><select><option>Cattle</option><option>Goats</option><option>Chickens — Layers</option><option>Chickens — Broilers</option><option>Pigs</option></select></div></div><div class="fr fr-2"><div class="fg"><label>Feed type</label><input type="text" placeholder="e.g. Layer mash 16%"></div><div class="fg"><label>Quantity (kg)</label><input type="number" placeholder="e.g. 7.2"></div></div><div class="fr fr-2"><div class="fg"><label>Cost (ZMW)</label><input type="number" placeholder="Auto from stock"></div><div class="fg"><label>Head count fed</label><input type="number" placeholder="e.g. 60"></div></div><div class="modal-footer"><button class="btn" onclick="closeModal('modal-feed-entry')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-feed-entry')"><i class="ti ti-check"></i> Log</button></div></div></div>
+<div class="modal-bg" id="modal-breed-entry"><div class="modal"><div class="modal-header"><div class="modal-title">Log Mating</div><button class="modal-close" onclick="closeModal('modal-breed-entry')"><i class="ti ti-x"></i></button></div><div class="fr fr-2"><div class="fg"><label>Female tag</label><input type="text" placeholder="e.g. GT-005"></div><div class="fg"><label>Species</label><select><option>Cattle</option><option>Goat</option><option>Pig</option><option>Sheep</option></select></div></div><div class="fr fr-2"><div class="fg"><label>Sire / Male tag</label><input type="text" placeholder="e.g. CT-001"></div><div class="fg"><label>Mating date</label><input type="date"></div></div><div class="fg"><label>Expected birth (auto-calculated)</label><input type="text" id="breed-due" readonly placeholder="Will calculate from mating date"></div><div class="modal-footer"><button class="btn" onclick="closeModal('modal-breed-entry')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-breed-entry')"><i class="ti ti-check"></i> Log</button></div></div></div>
+<div class="modal-bg" id="modal-lvsale-entry"><div class="modal"><div class="modal-header"><div class="modal-title">Record Livestock Sale</div><button class="modal-close" onclick="closeModal('modal-lvsale-entry')"><i class="ti ti-x"></i></button></div><div class="fr fr-2"><div class="fg"><label>Date</label><input type="date"></div><div class="fg"><label>Species</label><select><option>Cattle</option><option>Goat</option><option>Pig</option><option>Chicken</option></select></div></div><div class="fr fr-2"><div class="fg"><label>Animal tag(s)</label><input type="text" placeholder="e.g. GT-012, GT-013"></div><div class="fg"><label>Quantity</label><input type="number" placeholder="e.g. 3"></div></div><div class="fr fr-2"><div class="fg"><label>Live weight (kg each)</label><input type="number" placeholder="e.g. 30"></div><div class="fg"><label>Sale price (ZMW)</label><input type="number" placeholder="Per head or total"></div></div><div class="fg"><label>Buyer</label><input type="text" placeholder="e.g. Local butcher"></div><div class="modal-footer"><button class="btn" onclick="closeModal('modal-lvsale-entry')">Cancel</button><button class="btn btn-primary" onclick="closeModal('modal-lvsale-entry')"><i class="ti ti-check"></i> Record Sale</button></div></div></div>
+
+<script>
+// ── NAV ──
+const titles={overview:'Dashboard',agronomist:'AI Agronomist',weather:'Weather & Season','crop-blocks':'Farm Blocks','crop-cycles':'Crop Cycles','crop-calc':'AI Calculator','crop-spray':'Spray Schedule','crop-scanner':'Leaf Scanner','crop-harvest':'Harvest Log','crop-soil':'Soil Reports','lv-herd':'Herd Register','lv-health':'Health & Vaccinations','lv-feed':'Feed & Nutrition','lv-prod':'Production Records','lv-breeding':'Breeding Records','lv-sales':'Livestock Sales','acc-ledger':'Farm Ledger','acc-income':'Income','acc-expenses':'Expenses','acc-pl':'P&L Report','acc-budget':'Budget vs Actual','stock-all':'All Inventory','stock-chem':'Chemicals','stock-fert':'Fertilisers','stock-feed':'Livestock Feed','stock-equip':'Equipment',orders:'Order Tracking',payroll:'Payroll',market:'Market Prices'};
+const subs={overview:'',agronomist:'',weather:'','crop-blocks':'Crop Management','crop-cycles':'Crop Management','crop-calc':'Crop Management','crop-spray':'Crop Management','crop-scanner':'Crop Management','crop-harvest':'Crop Management','crop-soil':'Crop Management','lv-herd':'Livestock','lv-health':'Livestock','lv-feed':'Livestock','lv-prod':'Livestock','lv-breeding':'Livestock','lv-sales':'Livestock','acc-ledger':'Accounts','acc-income':'Accounts','acc-expenses':'Accounts','acc-pl':'Accounts','acc-budget':'Accounts','stock-all':'Stock & Inputs','stock-chem':'Stock & Inputs','stock-fert':'Stock & Inputs','stock-feed':'Stock & Inputs','stock-equip':'Stock & Inputs',orders:'Business',payroll:'Business',market:'Business'};
+const subParents={'crop-blocks':'sub-crops','crop-cycles':'sub-crops','crop-calc':'sub-crops','crop-spray':'sub-crops','crop-scanner':'sub-crops','crop-harvest':'sub-crops','crop-soil':'sub-crops','lv-herd':'sub-lv','lv-health':'sub-lv','lv-feed':'sub-lv','lv-prod':'sub-lv','lv-breeding':'sub-lv','lv-sales':'sub-lv','acc-ledger':'sub-acc','acc-income':'sub-acc','acc-expenses':'sub-acc','acc-pl':'sub-acc','acc-budget':'sub-acc','stock-all':'sub-stock','stock-chem':'sub-stock','stock-fert':'sub-stock','stock-feed':'sub-stock','stock-equip':'sub-stock'};
+function nav(id,el){
+  // Show correct panel
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const p=document.getElementById('panel-'+id);
+  if(p) p.classList.add('active');
+  // Clear active states on nav items
+  document.querySelectorAll('.s-item,.s-sub-item').forEach(n=>n.classList.remove('active'));
+  if(el){
+    el.classList.add('active');
+  } else {
+    document.querySelectorAll('.s-item,.s-sub-item').forEach(n=>{
+      const oc=n.getAttribute('onclick')||'';
+      if(oc.includes("'"+id+"'")) n.classList.add('active');
+    });
+  }
+  // Update topbar
+  const titleEl=document.getElementById('topbar-title');
+  if(titleEl) titleEl.innerHTML=(titles[id]||id)+(subs[id]?` <span>${subs[id]}</span>`:'');
+  // Auto-open parent submenu
+  const parentId=subParents[id];
+  if(parentId){
+    const sub=document.getElementById(parentId);
+    if(sub&&!sub.classList.contains('open')){
+      sub.classList.add('open');
+      const parentBtn=sub.previousElementSibling;
+      if(parentBtn) parentBtn.classList.add('open');
+    }
+  }
+  // Lazy-render charts
+  if(id==='acc-pl') setTimeout(()=>{renderExp();renderRev();},80);
+  if(id==='overview') setTimeout(renderOverview,80);
+  if(id==='lv-prod') setTimeout(renderEggs,80);
+}
+// Sub-group first panels — clicking parent header navigates here
+const subDefaults={'sub-crops':'crop-blocks','sub-lv':'lv-herd','sub-acc':'acc-ledger','sub-stock':'stock-all'};
+function toggleSub(id,el){
+  const sub=document.getElementById(id);
+  const isOpen=sub.classList.contains('open');
+  // Close all submenus
+  document.querySelectorAll('.s-sub').forEach(s=>s.classList.remove('open'));
+  document.querySelectorAll('.s-item').forEach(e=>e.classList.remove('open'));
+  if(!isOpen){
+    sub.classList.add('open');
+    el.classList.add('open');
+    // Navigate to the default panel for this group
+    const defaultPanel=subDefaults[id];
+    if(defaultPanel) nav(defaultPanel, null);
+  }
+}
+
+// ── MODALS ──
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-bg').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});});
+
+// ── YIELD UNITS ──
+let yieldUnit='kg',yieldFactor=1;
+const yieldUnits={kg:{f:1,lbl:'Yield per bed (kg)',plbl:'Price per kg (ZMW)',hint:''},crate:{f:30,lbl:'Yield per bed (crates, 30kg each)',plbl:'Price per crate (ZMW)',hint:'1 crate = 30 kg · Tomato standard'},bag50:{f:50,lbl:'Yield per bed (bags, 50kg each)',plbl:'Price per bag (ZMW)',hint:'1 bag = 50 kg · Common for cabbage'},bag25:{f:25,lbl:'Yield per bed (bags, 25kg each)',plbl:'Price per bag (ZMW)',hint:'1 bag = 25 kg · Common for onion'},box:{f:10,lbl:'Yield per bed (boxes, 10kg each)',plbl:'Price per box (ZMW)',hint:'1 box = 10 kg · Used for export/supermarket'}};
+function setYieldUnit(u,el){
+  yieldUnit=u;yieldFactor=yieldUnits[u].f;
+  document.querySelectorAll('#yield-units .unit-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('yield-lbl').textContent=yieldUnits[u].lbl;
+  document.getElementById('price-lbl').textContent=yieldUnits[u].plbl;
+  document.getElementById('yield-hint').textContent=yieldUnits[u].hint;
+  calc();
+}
+
+// ── HARVEST MODAL UNITS ──
+let harvestUnit='kg',harvestFactor=1;
+const harvestUnits={kg:{f:1},crate30:{f:30},bag50:{f:50},bag25:{f:25},box10:{f:10}};
+function setHarvestUnit(u,el){
+  harvestUnit=u;harvestFactor=harvestUnits[u].f;
+  document.querySelectorAll('#harvest-units .unit-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const labels={kg:'Quantity (kg)',crate30:'Quantity (crates, 30kg)',bag50:'Quantity (bags, 50kg)',bag25:'Quantity (bags, 25kg)',box10:'Quantity (boxes, 10kg)'};
+  document.getElementById('h-qty-lbl').textContent=labels[u];
+  if(u==='kg'){document.getElementById('h-kg-lbl').textContent='Kg (same as above)';}else{document.getElementById('h-kg-lbl').textContent='Kg equivalent (auto)';}
+  calcHarvest();
+}
+function calcHarvest(){
+  const qty=parseFloat(document.getElementById('h-qty').value)||0;
+  const kg=qty*harvestFactor;
+  document.getElementById('h-kg').value=harvestUnit==='kg'?'':kg||'';
+  const price=parseFloat(document.getElementById('h-price').value)||0;
+  if(price&&kg){document.getElementById('h-revenue-preview').style.display='block';document.getElementById('h-rev').textContent='ZMW '+Math.round(kg*price).toLocaleString();}
+}
+
+// ── CALCULATOR ──
+const cropDB={
+  tomato:{name:'Tomato',advice:'60×40cm minimum. Prune to single leader. Stake immediately after transplant.',tags:['60cm rows','40cm plants','~41,667/ha'],nutr:'Wk 1-2: NPK 10:20:10. Wk 3-4: CAN side-dress 50g/plant. Wk 5-6: Foliar MAP. Wk 7+: K-rich foliar.',yield:120},
+  cabbage:{name:'Cabbage',advice:'Large-head 60×50cm, baby-head 40×30cm. Tip burn risk at tight spacing in heat.',tags:['60cm rows','50cm plants','~33,333/ha'],nutr:'Wk 1: NPK at transplant. Wk 3: CAN top-dress. Wk 5: Switch to K.',yield:160},
+  pepper:{name:'Pepper',advice:'40×30cm. Shade netting reduces sunscald. Ca foliar prevents blossom end rot.',tags:['40cm rows','30cm plants','~83,333/ha'],nutr:'Wk 1-2: NPK. Wk 4: Ca foliar. Wk 6+: K boost.',yield:80},
+  onion:{name:'Onion',advice:'25×10cm. Stop nitrogen at bulbing. Tight spacing for pickling onions.',tags:['25cm rows','10cm plants','~400,000/ha'],nutr:'Wk 1: Low P. Wk 3: CAN. Stop N at bulbing. K from Wk 7.',yield:90},
+  strawberry:{name:'Strawberry',advice:'35×30cm with plastic mulch. Hill system on raised beds outperforms matted-row.',tags:['35cm rows','30cm plants','~95,238/ha','Premium'],nutr:'Wk 1: High P. Wk 3-4: CAN light. Wk 5+: K-dominant + Ca weekly.',yield:60},
+  ginger:{name:'Ginger',advice:'40×25cm, 30cm deep beds. Plant on ridges — waterlogging kills rhizomes.',tags:['40cm rows','25cm plants','~100,000/ha','High risk/reward'],nutr:'Month 1: Low N, high P. Month 2-3: Balanced NPK. Month 4+: K dominant.',yield:50},
+  maize:{name:'Maize',advice:'90×25cm, single plant per station. Minimum 2 rows for pollination.',tags:['90cm rows','25cm plants','~44,444/ha'],nutr:'Planting: Basal NPK. V6: CAN side-dress. Tasseling: Foliar micronutrients.',yield:200},
+  groundnut:{name:'Groundnut',advice:'45×10cm. Minimal nitrogen — nitrogen-fixing legume. Calcium critical for pod fill.',tags:['45cm rows','10cm plants','~222,222/ha'],nutr:'Planting: P & K only. Flowering: Ca foliar. Avoid excess N.',yield:80}
+};
+function calc(){
+  // Guard — calculator inputs may not exist if panel not yet visited
+  const cropEl=document.getElementById('c-crop');
+  if(!cropEl) return;
+  const L=parseFloat(document.getElementById('c-len').value)||0;
+  const W=parseFloat(document.getElementById('c-wid').value)||0;
+  const RS=parseFloat(document.getElementById('c-rs').value)||1;
+  const PS=parseFloat(document.getElementById('c-ps').value)||1;
+  const N=parseInt(document.getElementById('c-nb').value)||1;
+  const crop=cropEl.value||'tomato';
+  const rows=Math.floor((W*100)/RS);
+  const ppr=Math.floor((L*100)/PS);
+  const perBed=rows*ppr;
+  const total=perBed*N;
+  const ha=(L*W*N)/10000;
+  const pbEl=document.getElementById('r-pb');
+  const totEl=document.getElementById('r-tot');
+  const haEl=document.getElementById('r-ha');
+  if(pbEl) pbEl.textContent=perBed.toLocaleString();
+  if(totEl) totEl.textContent=total.toLocaleString();
+  if(haEl) haEl.textContent=ha>0?Math.round(total/ha).toLocaleString():'—';
+  const cropInfo=cropDB[crop]||cropDB['tomato'];
+  const cnEl=document.getElementById('c-cropname');
+  const adEl=document.getElementById('c-advice');
+  const tgEl=document.getElementById('c-tags');
+  const nuEl=document.getElementById('c-nutr');
+  if(cnEl) cnEl.textContent=cropInfo.name;
+  if(adEl) adEl.textContent=cropInfo.advice;
+  if(tgEl) tgEl.innerHTML=cropInfo.tags.map(tag=>`<span class="badge bg">${tag}</span>`).join('');
+  if(nuEl) nuEl.textContent=cropInfo.nutr;
+  const sc=parseFloat(document.getElementById('c-sc').value)||0;
+  const wb=parseFloat(document.getElementById('c-wb').value)||0;
+  const fc=parseFloat(document.getElementById('c-fc').value)||0;
+  const lc=parseFloat(document.getElementById('c-lc').value)||0;
+  const ch=parseFloat(document.getElementById('c-ch').value)||0;
+  const ir=parseFloat(document.getElementById('c-ir').value)||0;
+  const cS=total*sc*(1+wb/100),cF=total*fc,cL=lc*N,grand=cS+cF+cL+ch+ir;
+  const fmt=v=>'ZMW '+Math.round(v).toLocaleString();
+  const bdEl=document.getElementById('c-breakdown');
+  const grEl=document.getElementById('c-grand');
+  if(bdEl) bdEl.innerHTML=[['Seedlings (+'+Math.round(wb)+'% buffer)',cS],['Fertiliser',cF],['Labour',cL],['Chemicals',ch],['Irrigation',ir]].map(([lbl,val])=>`<div style="display:flex;justify-content:space-between;color:var(--tx3);"><span>${lbl}</span><span style="font-weight:600;color:var(--tx2);">${fmt(val)}</span></div>`).join('');
+  if(grEl) grEl.textContent=fmt(grand);
+  const yldRaw=parseFloat((document.getElementById('c-yld')||{}).value)||cropInfo.yield;
+  const yldKg=yldRaw*yieldFactor;
+  const pr=parseFloat((document.getElementById('c-pr')||{}).value)||0;
+  const totalKg=yldKg*N;
+  const rev=totalKg*pr,profit=rev-grand,roi=grand>0?(profit/grand*100):0;
+  const rvEl=document.getElementById('be-rev');
+  const prEl=document.getElementById('be-pro');
+  const roEl=document.getElementById('be-roi');
+  const beEl=document.getElementById('be-breakeven');
+  if(rvEl) rvEl.textContent=fmt(rev);
+  if(prEl){prEl.textContent=(profit>=0?'+':'')+fmt(profit);prEl.style.color=profit>=0?'var(--g700)':'var(--r600)';}
+  if(roEl) roEl.textContent=roi.toFixed(1)+'%';
+  const beYldKg=pr>0?grand/(pr*N):0;
+  const unitLabels={crate:'crates',bag50:'bags',bag25:'bags',box:'boxes'};
+  const beYld=yieldFactor>1?Math.ceil(beYldKg/yieldFactor)+' '+(unitLabels[yieldUnit]||'units'):beYldKg.toFixed(0)+' kg';
+  if(beEl) beEl.textContent=beYldKg>0?beYld+' per bed to cover all costs':'Set a price above to calculate';
+}
+// Defer initial calc until DOM is ready
+document.addEventListener('DOMContentLoaded', ()=>{ try{ calc(); }catch(e){} });
+
+// ── AI CALCULATOR ──
+const aiCalcReplies=["Your plan looks viable. At your current spacing and 10 beds, plant population of 14,400 is solid for tomato. However your chemical budget of ZMW 2,400 is low for a full 10-week season \u2014 I'd budget ZMW 3,500 minimum given the current blight pressure in your zone. Your break-even yield is achievable but leaves thin margin for a bad market week.","Good news: your ROI is positive. The main risk I see is your seedling cost \u2014 at ZMW 0.80/plant with only 10% buffer, any transplant failure above 12% puts you in trouble. Consider 15% buffer. Also, your irrigation figure looks like it's for infrastructure only \u2014 add ZMW 400 for electricity and fuel cost across the growing period.","Strong plan. One thing worth noting: your target price of ZMW 4.50/kg is the mid-market rate, but tomatoes in May\u2013June in Lusaka often spike to ZMW 6\u20137/kg due to dry season scarcity. If your timing is right, your actual ROI could be 30\u201340% higher than shown here."];
+let aiCalcIdx=0;
+function aiAnalyseCalc(){
+  const div=document.getElementById('ai-calc-result');
+  div.innerHTML='<div class="ai-loading"><div class="dot-pulse"><span></span><span></span><span></span></div> Analysing your plan...</div>';
+  setTimeout(()=>{div.innerHTML=`<div class="ai-result" style="font-size:13px;color:var(--tx3);line-height:1.65;"><strong style="color:var(--tx2);">AI Assessment:</strong> ${aiCalcReplies[aiCalcIdx%aiCalcReplies.length]}</div>`;aiCalcIdx++;},1600);
+}
+
+// ── CASUAL WORKER CALC ──
+function calcCasual(){const days=parseFloat(document.getElementById('cw-days').value)||0;const rate=parseFloat(document.getElementById('cw-rate').value)||0;document.getElementById('cw-total').value=days*rate||'';}
+
+// ── PRODUCTION LOG ──
+function logProduction(){alert('Production entry saved! It will appear in your production records and automatically update this month\'s revenue totals.');}
+
+// ── AI AGRONOMIST ──
+const aiR=['Based on your Block A records and the current 72% humidity, those yellowing lower leaves are early blight (Alternaria solani). You\'re 3 days past your spray window. Apply Mancozeb 80WP at 2g/L today — before Thursday\'s rain. Keep GT-008 and GT-009 isolated.','For GT-008 and GT-009: Pasteurellosis is most likely. Administer Oxytetracycline 10mg/kg IM once daily for 3-5 days. Good ventilation in Pen B is critical. Check the rest of the goat herd daily for 5 days. Call Dr Banda today.','Your layer flock at 84% lay rate is performing well. However layer mash is critically low at 12kg — that\'s barely 1 day of feed. Reorder 50kg immediately. A 2-day feed gap will drop lay rate to 50–60% and it takes 7–10 days to recover fully.','CT-006 steer at 290kg Brahman cross is prime market weight. Current Lusaka beef price puts him at ZMW 3,800–4,500 per head. Dry season is approaching — sell within the next 3 weeks before animals start losing condition on poor pasture.','For Block E planting in June: prepare beds now with 5 tonnes/ha of compost or cattle manure. This is your chance to correct the soil structure before the dry season fully sets in. Target planting window: 1–10 June for a September harvest.'];
+let aiIdx=0;
+function sendAI(){const inp=document.getElementById('ai-inp');const q=inp.value.trim();if(!q)return;addMsg(q,'user');inp.value='';setTimeout(()=>addMsg(aiR[aiIdx%aiR.length],'ai'),800);aiIdx++;}
+function sendChip(el){addMsg(el.textContent,'user');setTimeout(()=>addMsg(aiR[aiIdx%aiR.length],'ai'),800);aiIdx++;}
+function addMsg(text,type){const box=document.getElementById('ai-msgs');const el=document.createElement('div');el.className='msg msg-'+type;el.innerHTML=`<div class="msg-av"><i class="ti ti-${type==='ai'?'leaf':'user'}"></i></div><div class="bubble">${text}</div>`;box.appendChild(el);box.scrollTop=box.scrollHeight;}
+
+// ── CHARTS ──
+function renderOverview(){const c=document.getElementById('ch-overview');if(!c||c._ch)return;c._ch=new Chart(c,{type:'bar',data:{labels:['Feb','Mar','Apr','May'],datasets:[{label:'Crop Revenue',data:[4200,8800,12400,17400],backgroundColor:'#2f5a14',borderRadius:5},{label:'Livestock Revenue',data:[800,1600,2200,5200],backgroundColor:'#72a63c',borderRadius:5},{label:'Expenses',data:[3100,4200,6800,8740],backgroundColor:'#cce09e',borderRadius:5}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{x:{grid:{display:false}},y:{grid:{color:'#dce8c4'},ticks:{callback:v=>'ZMW '+v.toLocaleString()}}}}});}
+function renderExp(){const c=document.getElementById('ch-expenses');if(!c||c._ch)return;c._ch=new Chart(c,{type:'doughnut',data:{labels:['Labour','Crop inputs','Feed','Vet','Irrigation','Seedlings'],datasets:[{data:[8640,7560,4600,2040,1960,1600],backgroundColor:['#0a1f08','#2f5a14','#4a7d1f','#72a63c','#a3c870','#cce09e'],borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}}});}
+function renderRev(){const c=document.getElementById('ch-revstream');if(!c||c._ch)return;c._ch=new Chart(c,{type:'bar',data:{labels:['Crop sales','Livestock','Milk','Eggs'],datasets:[{data:[42800,4800,2052,1890],backgroundColor:['#2f5a14','#7a4400','#4a7d1f','#EF9F27'],borderRadius:5}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{grid:{color:'#dce8c4'},ticks:{callback:v=>'ZMW '+v.toLocaleString()}}}}});}
+function renderEggs(){const c=document.getElementById('ch-eggs');if(!c||c._ch)return;c._ch=new Chart(c,{type:'bar',data:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],datasets:[{label:'Eggs',data:[80,83,81,79,84,82,84],backgroundColor:'#EF9F27',borderRadius:4}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{min:70,grid:{color:'#dce8c4'}}}}});}
+setTimeout(renderOverview,200);
+
+// ── FILTER HERD ──
+const herdData=[
+  {tag:'CT-001',species:'cattle',icon:'🐄',breed:'Brahman ×',sex:'Bull',age:'3 yr',wt:'380 kg',purpose:'Breeding',status:'<span class="badge bg">Healthy</span>',val:'ZMW 6,000'},
+  {tag:'CT-004',species:'cattle',icon:'🐄',breed:'Friesian',sex:'Cow',age:'3 yr',wt:'380 kg',purpose:'Dairy',status:'<span class="badge ba">Pregnant</span>',val:'ZMW 8,000'},
+  {tag:'CT-006',species:'cattle',icon:'🐄',breed:'Brahman ×',sex:'Steer',age:'2 yr',wt:'290 kg',purpose:'Beef',status:'<span class="badge bt">Market ready</span>',val:'ZMW 4,200'},
+  {tag:'GT-001',species:'goat',icon:'🐐',breed:'Boer',sex:'Buck',age:'2 yr',wt:'72 kg',purpose:'Breeding',status:'<span class="badge bg">Healthy</span>',val:'ZMW 1,100'},
+  {tag:'GT-008',species:'goat',icon:'🐐',breed:'Boer',sex:'Doe',age:'3 yr',wt:'48 kg',purpose:'Meat',status:'<span class="badge br">Sick — isolated</span>',val:'ZMW 900'},
+  {tag:'GT-009',species:'goat',icon:'🐐',breed:'Boer',sex:'Doe',age:'2 yr',wt:'44 kg',purpose:'Meat',status:'<span class="badge br">Sick — isolated</span>',val:'ZMW 800'},
+  {tag:'GT-015',species:'goat',icon:'🐐',breed:'Local',sex:'Doe',age:'4 yr',wt:'32 kg',purpose:'Meat',status:'<span class="badge bg">Healthy</span>',val:'ZMW 600'},
+  {tag:'PG-001',species:'pig',icon:'🐷',breed:'Large White',sex:'Sow',age:'2 yr',wt:'180 kg',purpose:'Breeding',status:'<span class="badge ba">Pregnant</span>',val:'ZMW 4,500'},
+  {tag:'PG-003',species:'pig',icon:'🐷',breed:'Large White',sex:'Boar',age:'2 yr',wt:'210 kg',purpose:'Breeding',status:'<span class="badge bg">Healthy</span>',val:'ZMW 5,000'},
+  {tag:'PG-004',species:'pig',icon:'🐷',breed:'Large White',sex:'Barrow',age:'8 wk',wt:'46 kg',purpose:'Pork',status:'<span class="badge bt">Market ready</span>',val:'ZMW 2,400'},
+  {tag:'PG-005',species:'pig',icon:'🐷',breed:'Large White',sex:'Barrow',age:'8 wk',wt:'49 kg',purpose:'Pork',status:'<span class="badge bt">Market ready</span>',val:'ZMW 2,600'},
+  {tag:'CK-L01',species:'chicken',icon:'🐓',breed:'Lohmann Brown',sex:'Hen',age:'34 wk',wt:'1.8 kg',purpose:'Eggs',status:'<span class="badge bg">84% lay rate</span>',val:'ZMW 200 (flock)'},
+  {tag:'CK-B01',species:'chicken',icon:'🐓',breed:'Cobb 500',sex:'Mixed',age:'22 days',wt:'0.9 kg',purpose:'Broiler',status:'<span class="badge bt">Growing</span>',val:'ZMW 1,100 (batch)'},
+];
+function filterHerd(){
+  const f=document.getElementById('species-filter').value;
+  const rows=document.getElementById('herd-rows');
+  const filtered=f==='all'?herdData:herdData.filter(a=>a.species===f);
+  rows.innerHTML=filtered.map(a=>`<tr><td>${a.tag}</td><td>${a.icon} ${a.species.charAt(0).toUpperCase()+a.species.slice(1)}</td><td>${a.breed}</td><td>${a.sex}</td><td>${a.age}</td><td>${a.wt}</td><td>${a.purpose}</td><td>${a.status}</td><td>${a.val}</td></tr>`).join('');
+}
+
+// ── MARKET PRICES CALCULATOR inline ──
+// Allows price-to-revenue quick calc from market panel
+function calcMarketRev(qty,unit,price){
+  const factors={kg:1,crate:30,bag50:50,bag25:25,box:10,head:1,bird:1,egg:1,litre:1};
+  return qty*(factors[unit]||1)*price;
+}
+
+// ── SPRAY LOG — mark done ──
+function markSprayDone(btn){
+  btn.parentElement.innerHTML='<span class="badge bg"><i class="ti ti-check"></i> Done</span>';
+  btn.closest('tr').style.background='';
+}
+
+// ── TOAST NOTIFICATION ──
+function toast(msg,type='ok'){
+  const t=document.createElement('div');
+  t.style.cssText=`position:fixed;bottom:20px;right:20px;z-index:9999;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,0.15);animation:fadeIn .2s ease;background:${type==='ok'?'var(--g700)':'var(--r600)'};color:#fff;display:flex;align-items:center;gap:8px;`;
+  t.innerHTML=`<i class="ti ti-${type==='ok'?'check':'alert-circle'}"></i>${msg}`;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3000);
+}
+
+// Patch modal save buttons to show toast and close modal
+document.querySelectorAll('.modal-footer .btn-primary').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const modal=btn.closest('.modal');
+    const modalBg=btn.closest('.modal-bg');
+    if(modal&&modalBg){
+      const titleText=modal.querySelector('.modal-title').textContent;
+      toast(titleText+' saved successfully');
+      setTimeout(()=>modalBg.classList.remove('open'),200);
+    }
+  });
+});
+
+// ── SIDEBAR AUTO-OPEN — handled inside nav() directly ──
+
+// ── KEYBOARD SHORTCUT — Escape closes modals ──
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')document.querySelectorAll('.modal-bg.open').forEach(m=>m.classList.remove('open'));
+});
+
+// ── RESPONSIVE SIDEBAR TOGGLE ──
+document.addEventListener('keydown',e=>{if(e.key==='b'&&e.ctrlKey){const s=document.querySelector('.sidebar');s.style.display=s.style.display==='none'?'flex':'none';}});
+
+// Init date fields to today
+document.querySelectorAll('input[type=date]').forEach(d=>{d.value=new Date().toISOString().split('T')[0];});
+</script>
+</body>
+</html>
