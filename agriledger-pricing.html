@@ -887,6 +887,88 @@ footer {
   .compare-table { font-size: 12px; }
   .compare-table th, .compare-table td { padding: 10px 12px; }
 }
+
+/* ── FLOATING DEMO BUTTON ── */
+.float-demo {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 20px;
+  background: linear-gradient(135deg, #3d6b22, #2a4a18);
+  border: 1px solid rgba(140,196,74,0.4);
+  border-radius: 100px;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 0 0 0 rgba(90,145,50,0.4);
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
+  animation: floatPulse 3s ease-in-out infinite, floatIn 0.6s cubic-bezier(.34,1.56,.64,1) forwards;
+  opacity: 0;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.float-demo:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.5), 0 0 0 6px rgba(90,145,50,0.15);
+}
+.float-demo:active {
+  transform: translateY(0) scale(0.98);
+}
+.float-demo .fd-icon {
+  width: 28px;
+  height: 28px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.float-demo .fd-label { line-height: 1.2; }
+.float-demo .fd-label span {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  opacity: 0.7;
+  letter-spacing: 0.03em;
+}
+.float-demo .fd-arrow {
+  font-size: 16px;
+  opacity: 0.7;
+  transition: transform 0.2s;
+}
+.float-demo:hover .fd-arrow { transform: translateX(3px); }
+
+/* Shrinks to icon-only on small screens */
+@media (max-width: 480px) {
+  .float-demo { bottom: 20px; right: 20px; padding: 12px 16px; }
+  .float-demo .fd-label span { display: none; }
+}
+
+@keyframes floatPulse {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes floatIn {
+  from { opacity: 0; transform: translateY(40px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Hides the button while user is near the top (hero already shows demo link) */
+.float-demo.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+}
+
 </style>
 </head>
 <body>
@@ -1428,6 +1510,32 @@ function initToggle() {
   });
 }
 initToggle();
+
+// ── FLOATING DEMO BUTTON SCROLL BEHAVIOUR ──
+(function(){
+  const btn = document.getElementById('float-demo-btn');
+  if (!btn) return;
+  // Show after scrolling past the hero (~400px), hide near top
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 380) {
+      btn.classList.remove('hidden');
+    } else {
+      btn.classList.add('hidden');
+    }
+  }, { passive: true });
+})();
+
 </script>
+
+<!-- ── FLOATING DEMO BUTTON ── -->
+<a class="float-demo hidden" id="float-demo-btn" href="/" target="_blank">
+  <div class="fd-icon">👁</div>
+  <div class="fd-label">
+    Live Demo
+    <span>No signup needed</span>
+  </div>
+  <span class="fd-arrow">→</span>
+</a>
+
 </body>
 </html>
