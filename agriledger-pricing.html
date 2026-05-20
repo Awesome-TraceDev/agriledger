@@ -1001,7 +1001,7 @@ footer {
 
 <!-- ── DEMO BUTTON ── -->
 <div class="z1" style="text-align:center;margin-bottom:40px;margin-top:-20px;">
-  <a href="agriledger-v3.html" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:13px 28px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18);border-radius:100px;color:var(--cream);font-family:var(--font-body);font-size:14px;font-weight:600;text-decoration:none;transition:all 0.2s;backdrop-filter:blur(8px);" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.07)'">
+  <a href="index.html" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:13px 28px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18);border-radius:100px;color:var(--cream);font-family:var(--font-body);font-size:14px;font-weight:600;text-decoration:none;transition:all 0.2s;backdrop-filter:blur(8px);" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.07)'">
     <span style="font-size:18px;">👁</span> See the live dashboard demo
     <span style="font-size:11px;font-weight:700;background:rgba(140,196,74,0.25);color:var(--lime);padding:2px 8px;border-radius:20px;border:1px solid rgba(140,196,74,0.3);">No signup</span>
   </a>
@@ -1515,20 +1515,26 @@ initToggle();
 (function(){
   const btn = document.getElementById('float-demo-btn');
   if (!btn) return;
-  // Show after scrolling past the hero (~400px), hide near top
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 380) {
+  function checkScroll() {
+    // Use pageYOffset for broader browser compatibility
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+    if (scrollY > 320) {
       btn.classList.remove('hidden');
     } else {
       btn.classList.add('hidden');
     }
-  }, { passive: true });
+  }
+  window.addEventListener('scroll', checkScroll, { passive: true });
+  // Also check on load in case page is already scrolled
+  window.addEventListener('load', checkScroll);
+  // For testing: also show after 2 seconds regardless (remove in production)
+  setTimeout(() => btn.classList.remove('hidden'), 2000);
 })();
 
 </script>
 
 <!-- ── FLOATING DEMO BUTTON ── -->
-<a class="float-demo hidden" id="float-demo-btn" href="/" target="_blank">
+<a class="float-demo hidden" id="float-demo-btn" href="index.html" target="_blank">
   <div class="fd-icon">👁</div>
   <div class="fd-label">
     Live Demo
