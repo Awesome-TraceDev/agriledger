@@ -909,7 +909,7 @@ footer {
   cursor: pointer;
   box-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 0 0 0 rgba(90,145,50,0.4);
   transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
-  animation: floatPulse 3s ease-in-out infinite, floatIn 0.6s cubic-bezier(.34,1.56,.64,1) forwards;
+  animation: floatPulse 3s ease-in-out infinite;
   opacity: 0;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -962,11 +962,9 @@ footer {
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Hides the button while user is near the top (hero already shows demo link) */
-.float-demo.hidden {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(20px);
+/* Transition for smooth show/hide */
+.float-demo {
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
 }
 
 </style>
@@ -1420,6 +1418,16 @@ footer {
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- ── FLOATING DEMO BUTTON ── -->
+<a class="float-demo" id="float-demo-btn" href="index.html" target="_blank">
+  <div class="fd-icon">👁</div>
+  <div class="fd-label">
+    Live Demo
+    <span>No signup needed</span>
+  </div>
+  <span class="fd-arrow">→</span>
+</a>
+
 <script>
 // ── MARKET DATA ── swap per market at build time
 const markets = {
@@ -1511,37 +1519,22 @@ function initToggle() {
 }
 initToggle();
 
-// ── FLOATING DEMO BUTTON SCROLL BEHAVIOUR ──
-(function(){
+// ── FLOATING DEMO BUTTON ──
+document.addEventListener('DOMContentLoaded', function() {
   const btn = document.getElementById('float-demo-btn');
   if (!btn) return;
+  // Hide near top of page, show after scrolling past hero
   function checkScroll() {
-    // Use pageYOffset for broader browser compatibility
     const scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
-    if (scrollY > 320) {
-      btn.classList.remove('hidden');
-    } else {
-      btn.classList.add('hidden');
-    }
+    btn.style.opacity = scrollY > 300 ? '1' : '0';
+    btn.style.pointerEvents = scrollY > 300 ? 'all' : 'none';
+    btn.style.transform = scrollY > 300 ? 'translateY(0)' : 'translateY(20px)';
   }
   window.addEventListener('scroll', checkScroll, { passive: true });
-  // Also check on load in case page is already scrolled
-  window.addEventListener('load', checkScroll);
-  // For testing: also show after 2 seconds regardless (remove in production)
-  setTimeout(() => btn.classList.remove('hidden'), 2000);
-})();
+  checkScroll();
+});
 
 </script>
-
-<!-- ── FLOATING DEMO BUTTON ── -->
-<a class="float-demo hidden" id="float-demo-btn" href="index.html" target="_blank">
-  <div class="fd-icon">👁</div>
-  <div class="fd-label">
-    Live Demo
-    <span>No signup needed</span>
-  </div>
-  <span class="fd-arrow">→</span>
-</a>
 
 </body>
 </html>
