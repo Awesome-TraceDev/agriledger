@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriLedger AI — Plans & Pricing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Epilogue:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── CONFIG — swap these per market ── */
+:root {
+  --currency: "ZMW";
+  --seasonal-price: "90";
+  --full-price: "700";
+  --seasonal-usd: "$5";
+  --full-usd: "$38";
+  --market: "Zambia";
+  --support-email: "hello@agriledger.app";
+
+  /* palette */
+  --soil: #1a1208;
+  --earth: #2d1f0a;
+  --bark: #3d2b10;
+  --moss: #2a4a18;
+  --leaf: #3d6b22;
+  --sprout: #5a9132;
+  --lime: #8cc44a;
+  --mist: #b8d98a;
+  --cream: #f5f0e8;
+  --parchment: #ede5d0;
+  --gold: #c8a84b;
+  --amber: #e8a020;
+  --white: #fdfcf8;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Epilogue', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--soil);
+  color: var(--cream);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── BACKGROUND TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(90,145,50,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(200,168,75,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 100% 80% at 50% 50%, rgba(42,74,24,0.15) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── GRAIN ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+.z1 { position: relative; z-index: 1; }
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 100;
+  background: linear-gradient(to bottom, rgba(26,18,8,0.95), transparent);
+  backdrop-filter: blur(8px);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--white);
+  letter-spacing: -0.02em;
+}
+.nav-logo span { color: var(--lime); font-style: italic; }
+
+.nav-links { display: flex; align-items: center; gap: 24px; }
+.nav-links a {
+  font-size: 13px;
+  color: rgba(245,240,232,0.6);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--cream); }
+
+.nav-cta {
+  background: var(--leaf);
+  color: var(--white) !important;
+  padding: 7px 16px;
+  border-radius: 100px;
+  font-weight: 600 !important;
+}
+.nav-cta:hover { background: var(--sprout) !important; }
+
+/* ── HERO ── */
+.hero {
+  padding: 140px 32px 80px;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lime);
+  background: rgba(90,145,50,0.12);
+  border: 1px solid rgba(90,145,50,0.25);
+  padding: 6px 14px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+}
+.hero-eyebrow::before { content: '🌱'; }
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 6vw, 64px);
+  line-height: 1.08;
+  color: var(--white);
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--lime);
+}
+
+.hero-sub {
+  font-size: 17px;
+  color: rgba(245,240,232,0.65);
+  line-height: 1.65;
+  max-width: 560px;
+  margin: 0 auto 40px;
+  font-weight: 300;
+}
+
+/* ── MARKET BADGE ── */
+.market-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 60px;
+  flex-wrap: wrap;
+}
+.market-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(200,168,75,0.3);
+  color: var(--gold);
+  background: rgba(200,168,75,0.08);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.market-badge:hover { border-color: var(--gold); background: rgba(200,168,75,0.15); }
+.market-badge.active { border-color: var(--gold); background: rgba(200,168,75,0.18); }
+.market-badge span { font-size: 14px; }
+
+/* ── BILLING TOGGLE ── */
+.billing-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 56px;
+}
+.toggle-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(245,240,232,0.6);
+  transition: color 0.2s;
+}
+.toggle-label.active { color: var(--cream); }
+.toggle-track {
+  width: 48px;
+  height: 26px;
+  background: rgba(90,145,50,0.25);
+  border: 1px solid rgba(90,145,50,0.4);
+  border-radius: 100px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.toggle-track.on { background: var(--leaf); border-color: var(--leaf); }
+.toggle-thumb {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  background: var(--cream);
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.toggle-track.on .toggle-thumb { transform: translateX(22px); }
+.save-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  background: rgba(200,168,75,0.2);
+  color: var(--gold);
+  border-radius: 100px;
+  border: 1px solid rgba(200,168,75,0.3);
+}
+
+/* ── PRICING CARDS ── */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 900px;
+  margin: 0 auto 80px;
+  padding: 0 32px;
+  align-items: start;
+}
+
+.price-card {
+  border-radius: 24px;
+  padding: 36px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+.price-card:hover { transform: translateY(-4px); }
+
+/* Seasonal card */
+.card-seasonal {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.card-seasonal::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, rgba(90,145,50,0.15), transparent 70%);
+  pointer-events: none;
+}
+
+/* Full farmer card */
+.card-full {
+  background: linear-gradient(145deg, rgba(42,74,24,0.6), rgba(26,40,14,0.8));
+  border: 1px solid rgba(90,145,50,0.35);
+}
+.card-full::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(140,196,74,0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 100px;
+  margin-bottom: 20px;
+}
+.badge-seasonal { background: rgba(255,255,255,0.08); color: rgba(245,240,232,0.7); border: 1px solid rgba(255,255,255,0.12); }
+.badge-full { background: rgba(140,196,74,0.18); color: var(--lime); border: 1px solid rgba(140,196,74,0.3); }
+.badge-popular::after { content: ' · Most popular'; }
+
+.card-name {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--white);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.card-tagline {
+  font-size: 13px;
+  color: rgba(245,240,232,0.5);
+  margin-bottom: 28px;
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+.card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.price-currency {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(245,240,232,0.6);
+  margin-top: 6px;
+}
+.price-amount {
+  font-family: var(--font-display);
+  font-size: 52px;
+  color: var(--white);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.price-period {
+  font-size: 13px;
+  color: rgba(245,240,232,0.45);
+  font-weight: 400;
+}
+.price-usd {
+  font-size: 12px;
+  color: rgba(245,240,232,0.35);
+  margin-bottom: 28px;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 24px 0;
+}
+
+.feature-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin-bottom: 32px;
+}
+.feature-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13.5px;
+  color: rgba(245,240,232,0.75);
+  line-height: 1.5;
+  font-weight: 400;
+}
+.feature-list li .check {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-size: 10px;
+}
+.check-seasonal { background: rgba(255,255,255,0.1); color: rgba(245,240,232,0.5); }
+.check-full { background: rgba(140,196,74,0.2); color: var(--lime); }
+.feature-list li strong { color: var(--white); font-weight: 600; }
+.feature-list li .tag {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.tag-new { background: rgba(200,168,75,0.2); color: var(--gold); }
+.tag-ai { background: rgba(90,145,50,0.2); color: var(--lime); }
+
+/* CTA BUTTONS */
+.btn-waitlist {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: transparent;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.btn-waitlist:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.35);
+}
+
+.btn-primary-cta {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--sprout), var(--leaf));
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 20px rgba(90,145,50,0.35);
+}
+.btn-primary-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(90,145,50,0.45);
+}
+
+.card-note {
+  text-align: center;
+  font-size: 11.5px;
+  color: rgba(245,240,232,0.35);
+  margin-top: 12px;
+  font-weight: 400;
+}
+
+/* ── HOW IT WORKS ── */
+.how-section {
+  max-width: 900px;
+  margin: 0 auto 80px;
+  padding: 0 32px;
+}
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lime);
+  text-align: center;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 42px);
+  color: var(--white);
+  text-align: center;
+  margin-bottom: 10px;
+  line-height: 1.15;
+}
+.section-sub {
+  font-size: 15px;
+  color: rgba(245,240,232,0.5);
+  text-align: center;
+  margin-bottom: 52px;
+  font-weight: 300;
+  max-width: 540px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* JOURNEY FLOWS */
+.journey-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.journey-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 28px;
+}
+.journey-card.featured {
+  background: rgba(42,74,24,0.35);
+  border-color: rgba(90,145,50,0.25);
+}
+
+.journey-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.journey-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.icon-seasonal { background: rgba(255,255,255,0.07); }
+.icon-full { background: rgba(90,145,50,0.2); }
+.journey-name {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--white);
+  font-weight: 700;
+}
+.journey-tier { font-size: 11px; color: rgba(245,240,232,0.4); font-weight: 500; }
+
+.step {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 18px;
+  position: relative;
+}
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 32px;
+  bottom: -10px;
+  width: 1px;
+  background: rgba(255,255,255,0.08);
+}
+.step-num {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(245,240,232,0.6);
+  background: rgba(255,255,255,0.04);
+}
+.journey-card.featured .step-num {
+  border-color: rgba(90,145,50,0.4);
+  background: rgba(90,145,50,0.12);
+  color: var(--lime);
+}
+.step-content {}
+.step-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+.step-desc {
+  font-size: 12px;
+  color: rgba(245,240,232,0.45);
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+/* ── COMPARISON TABLE ── */
+.compare-section {
+  max-width: 900px;
+  margin: 0 auto 80px;
+  padding: 0 32px;
+}
+
+.compare-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.compare-table thead tr {
+  background: rgba(255,255,255,0.04);
+}
+.compare-table th {
+  padding: 16px 20px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.45);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.compare-table th:not(:first-child) { text-align: center; }
+.compare-table th.col-full { color: var(--lime); }
+
+.compare-table td {
+  padding: 13px 20px;
+  font-size: 13px;
+  color: rgba(245,240,232,0.65);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+.compare-table td:not(:first-child) { text-align: center; }
+.compare-table .section-row td {
+  padding: 10px 20px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(245,240,232,0.25);
+  background: rgba(255,255,255,0.02);
+  border-bottom: none;
+}
+.col-full-bg { background: rgba(90,145,50,0.04); }
+
+.tick { color: var(--lime); font-size: 16px; }
+.cross { color: rgba(245,240,232,0.2); font-size: 16px; }
+.partial { font-size: 11px; color: var(--gold); font-weight: 600; }
+
+/* ── WAITLIST SECTION ── */
+.waitlist-section {
+  max-width: 600px;
+  margin: 0 auto 100px;
+  padding: 0 32px;
+  text-align: center;
+}
+
+.waitlist-card {
+  background: linear-gradient(145deg, rgba(42,74,24,0.5), rgba(26,40,14,0.7));
+  border: 1px solid rgba(90,145,50,0.3);
+  border-radius: 28px;
+  padding: 48px 40px;
+  position: relative;
+  overflow: hidden;
+}
+.waitlist-card::before {
+  content: '';
+  position: absolute;
+  top: -80px; left: 50%;
+  transform: translateX(-50%);
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(90,145,50,0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.waitlist-emoji { font-size: 48px; margin-bottom: 16px; display: block; }
+.waitlist-title {
+  font-family: var(--font-display);
+  font-size: 30px;
+  color: var(--white);
+  margin-bottom: 10px;
+  line-height: 1.15;
+}
+.waitlist-sub {
+  font-size: 14px;
+  color: rgba(245,240,232,0.55);
+  margin-bottom: 28px;
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+.waitlist-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.waitlist-form input[type="email"] {
+  flex: 1;
+  padding: 13px 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.waitlist-form input:focus { border-color: rgba(90,145,50,0.6); }
+.waitlist-form input::placeholder { color: rgba(245,240,232,0.3); }
+.waitlist-form select {
+  padding: 13px 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+.waitlist-form select option { background: var(--earth); color: var(--cream); }
+
+.btn-join {
+  padding: 13px 24px;
+  background: linear-gradient(135deg, var(--sprout), var(--leaf));
+  color: var(--white);
+  border: none;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(90,145,50,0.3);
+}
+.btn-join:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(90,145,50,0.4);
+}
+
+.waitlist-proof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(245,240,232,0.35);
+}
+.waitlist-proof .dot { width: 4px; height: 4px; background: rgba(245,240,232,0.2); border-radius: 50%; }
+.success-msg {
+  display: none;
+  padding: 14px;
+  background: rgba(90,145,50,0.15);
+  border: 1px solid rgba(90,145,50,0.3);
+  border-radius: 10px;
+  color: var(--lime);
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 0;
+}
+
+/* ── MARKETS ── */
+.markets-section {
+  max-width: 900px;
+  margin: 0 auto 80px;
+  padding: 0 32px;
+}
+.markets-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+.market-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.market-card:hover, .market-card.active {
+  background: rgba(90,145,50,0.1);
+  border-color: rgba(90,145,50,0.3);
+}
+.market-flag { font-size: 28px; margin-bottom: 6px; display: block; }
+.market-name { font-size: 12px; font-weight: 600; color: rgba(245,240,232,0.6); }
+.market-currency { font-size: 10px; color: rgba(245,240,232,0.3); margin-top: 2px; }
+.market-soon { font-size: 10px; color: rgba(245,240,232,0.25); font-style: italic; }
+
+/* ── FAQ ── */
+.faq-section {
+  max-width: 640px;
+  margin: 0 auto 80px;
+  padding: 0 32px;
+}
+.faq-item {
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.faq-q {
+  padding: 18px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cream);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.faq-q:hover { color: var(--white); }
+.faq-arrow {
+  color: rgba(245,240,232,0.3);
+  font-size: 18px;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.faq-item.open .faq-arrow { transform: rotate(180deg); }
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.faq-item.open .faq-a { max-height: 300px; }
+.faq-a-inner {
+  padding-bottom: 18px;
+  font-size: 14px;
+  color: rgba(245,240,232,0.5);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 32px;
+  text-align: center;
+}
+.footer-logo {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: rgba(245,240,232,0.4);
+  margin-bottom: 8px;
+}
+.footer-logo span { color: var(--lime); font-style: italic; }
+.footer-text {
+  font-size: 12px;
+  color: rgba(245,240,232,0.25);
+  line-height: 1.6;
+}
+.footer-links {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 12px;
+}
+.footer-links a {
+  font-size: 12px;
+  color: rgba(245,240,232,0.3);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--cream); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--leaf);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 1000;
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.6s ease forwards; }
+.delay-1 { animation-delay: 0.1s; opacity: 0; }
+.delay-2 { animation-delay: 0.2s; opacity: 0; }
+.delay-3 { animation-delay: 0.3s; opacity: 0; }
+.delay-4 { animation-delay: 0.4s; opacity: 0; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  nav { padding: 14px 18px; }
+  .nav-links { gap: 14px; }
+  .hero { padding: 110px 18px 60px; }
+  .pricing-grid { grid-template-columns: 1fr; padding: 0 18px; }
+  .journey-grid { grid-template-columns: 1fr; }
+  .markets-grid { grid-template-columns: repeat(3,1fr); }
+  .compare-section, .how-section, .waitlist-section, .faq-section, .markets-section { padding: 0 18px; }
+  .waitlist-form { flex-direction: column; }
+  .waitlist-card { padding: 32px 22px; }
+  .compare-table { font-size: 12px; }
+  .compare-table th, .compare-table td { padding: 10px 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="z1">
+  <div class="nav-logo">Agri<span>Ledger</span> AI</div>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#compare">Compare</a>
+    <a href="#markets">Markets</a>
+    <a href="#waitlist" class="nav-cta">Join Waitlist</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero z1">
+  <div class="hero-eyebrow fade-up">Early Access — Limited spots available</div>
+  <h1 class="fade-up delay-1">Farm smarter.<br><em>Pay only for what you grow.</em></h1>
+  <p class="hero-sub fade-up delay-2">AgriLedger AI gives every smallholder commercial farmer — from a single strawberry bed to a full mixed farm — a personal agronomist, business ledger, and crop intelligence tool in one place.</p>
+  <div class="market-bar fade-up delay-3" id="market-bar">
+    <div class="market-badge active" onclick="setMarket('zm',this)"><span>🇿🇲</span> Zambia · ZMW</div>
+    <div class="market-badge" onclick="setMarket('zw',this)"><span>🇿🇼</span> Zimbabwe · USD</div>
+    <div class="market-badge" onclick="setMarket('ke',this)"><span>🇰🇪</span> Kenya · KES</div>
+    <div class="market-badge" onclick="setMarket('za',this)"><span>🇿🇦</span> South Africa · ZAR</div>
+    <div class="market-badge" onclick="setMarket('gh',this)"><span>🇬🇭</span> Ghana · GHS</div>
+  </div>
+</section>
+
+
+<!-- ── DEMO BUTTON ── -->
+<div class="z1" style="text-align:center;margin-bottom:40px;margin-top:-20px;">
+  <a href="agriledger-v3.html" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:13px 28px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.18);border-radius:100px;color:var(--cream);font-family:var(--font-body);font-size:14px;font-weight:600;text-decoration:none;transition:all 0.2s;backdrop-filter:blur(8px);" onmouseover="this.style.background='rgba(255,255,255,0.12)'" onmouseout="this.style.background='rgba(255,255,255,0.07)'">
+    <span style="font-size:18px;">👁</span> See the live dashboard demo
+    <span style="font-size:11px;font-weight:700;background:rgba(140,196,74,0.25);color:var(--lime);padding:2px 8px;border-radius:20px;border:1px solid rgba(140,196,74,0.3);">No signup</span>
+  </a>
+  <div style="font-size:12px;color:rgba(245,240,232,0.35);margin-top:10px;">Full dashboard · All features active · Opens in new tab</div>
+</div>
+
+<!-- ── PRICING CARDS ── -->
+<div class="pricing-grid z1 fade-up delay-4">
+
+  <!-- SEASONAL -->
+  <div class="price-card card-seasonal">
+    <div class="card-badge badge-seasonal">🌱 Seasonal</div>
+    <div class="card-name">Single Season</div>
+    <div class="card-tagline">Perfect for first-time growers planting one crop. Everything you need, nothing you don't.</div>
+    <div class="card-price">
+      <span class="price-currency" id="s-curr">ZMW</span>
+      <span class="price-amount" id="s-price">110</span>
+      <span class="price-period">/ season</span>
+    </div>
+    <div class="price-usd" id="s-usd">≈ $6 USD · per crop cycle</div>
+
+    <div class="divider"></div>
+
+    <ul class="feature-list">
+      <li>
+        <span class="check check-seasonal">✓</span>
+        <span><strong>One crop, fully guided</strong> — strawberries, tomatoes, cabbage and more</span>
+      </li>
+      <li>
+        <span class="check check-seasonal">✓</span>
+        <span><strong>AI-recommended layout</strong> — single, double, or triple bed rows with spacing diagrams</span>
+      </li>
+      <li>
+        <span class="check check-seasonal">✓</span>
+        <span><strong>Plant population calculator</strong> — exact counts, seedling cost, break-even</span>
+      </li>
+      <li>
+        <span class="check check-seasonal">✓</span>
+        <span><strong>Full spray programme</strong> — week-by-week in plain language <span class="tag tag-ai">AI</span></span>
+      </li>
+      <li>
+        <span class="check check-seasonal">✓</span>
+        <span><strong>Nutrition schedule</strong> — fertiliser type, timing, and dosage</span>
+      </li>
+      <li>
+        <span class="check check-seasonal">✓</span>
+        <span><strong>Harvest tracker</strong> — log in crates, bags, or kg</span>
+      </li>
+      <li>
+        <span class="check check-seasonal">✓</span>
+        <span><strong>AI agronomist</strong> — ask anything about your crop <span class="tag tag-ai">AI</span></span>
+      </li>
+      <li>
+        <span class="check check-seasonal">✓</span>
+        <span><strong>Beginner mode</strong> — decisions made for you with clear explanations</span>
+      </li>
+    </ul>
+
+    <button class="btn-waitlist" onclick="openWaitlist('seasonal')">Join Seasonal Waitlist</button>
+    <p class="card-note">No payment now · You'll be notified at launch</p>
+  </div>
+
+  <!-- FULL FARMER -->
+  <div class="price-card card-full">
+    <div class="card-badge badge-full badge-popular">🌾 Full Farmer</div>
+    <div class="card-name">Full Farmer</div>
+    <div class="card-tagline">Complete mixed-farm management. Crops, livestock, staff, finances — all in one dashboard.</div>
+    <div class="card-price">
+      <span class="price-currency" id="f-curr">ZMW</span>
+      <span class="price-amount" id="f-price">1,050</span>
+      <span class="price-period">/ year</span>
+    </div>
+    <div class="price-usd" id="f-usd">≈ $55 USD · less than ZMW 88/month</div>
+
+    <div class="divider"></div>
+
+    <ul class="feature-list">
+      <li>
+        <span class="check check-full">✓</span>
+        <span><strong>Everything in Seasonal</strong> — unlimited crops and blocks</span>
+      </li>
+      <li>
+        <span class="check check-full">✓</span>
+        <span><strong>Livestock management</strong> — cattle, goats, pigs, chickens with health records</span>
+      </li>
+      <li>
+        <span class="check check-full">✓</span>
+        <span><strong>Farm ledger</strong> — income, expenses, full transaction history</span>
+      </li>
+      <li>
+        <span class="check check-full">✓</span>
+        <span><strong>P&L reports</strong> — season profitability per block and species</span>
+      </li>
+      <li>
+        <span class="check check-full">✓</span>
+        <span><strong>Payroll & wages</strong> — permanent staff and casual worker logs</span>
+      </li>
+      <li>
+        <span class="check check-full">✓</span>
+        <span><strong>Order tracking</strong> — buyer commitments, delivery status, invoices</span>
+      </li>
+      <li>
+        <span class="check check-full">✓</span>
+        <span><strong>AI leaf scanner</strong> — photo diagnosis and treatment plan <span class="tag tag-ai">AI</span></span>
+      </li>
+      <li>
+        <span class="check check-full">✓</span>
+        <span><strong>Soil report parser</strong> — upload lab report, get nutrition calendar <span class="tag tag-ai">AI</span></span>
+      </li>
+      <li>
+        <span class="check check-full">✓</span>
+        <span><strong>Market price tracker</strong> — current local rates for all produce</span>
+      </li>
+      <li>
+        <span class="check check-full">✓</span>
+        <span><strong>Inventory & reorder alerts</strong> — chemicals, feed, vaccines <span class="tag tag-new">New</span></span>
+      </li>
+    </ul>
+
+    <button class="btn-primary-cta" onclick="openWaitlist('full')">Join Full Farmer Waitlist</button>
+    <p class="card-note">Early access members get first 3 months free</p>
+  </div>
+</div>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how-section z1" id="how">
+  <div class="section-label">How it works</div>
+  <h2 class="section-title">Two paths, one platform</h2>
+  <p class="section-sub">Whether you're planting your first crop or managing a full commercial operation, AgriLedger meets you where you are.</p>
+
+  <div class="journey-grid">
+
+    <!-- SEASONAL JOURNEY -->
+    <div class="journey-card">
+      <div class="journey-header">
+        <div class="journey-icon icon-seasonal">🌱</div>
+        <div>
+          <div class="journey-name">Seasonal Grower</div>
+          <div class="journey-tier">Single Season Plan</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Choose your crop</div>
+          <div class="step-desc">Pick from strawberries, tomatoes, cabbage, onion, pepper, ginger and more. One tap — done.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Tell us your setup</div>
+          <div class="step-desc">Number of beds, your experience level. We do the rest — recommending single, double, or triple row layouts with visual diagrams.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Get your complete plan</div>
+          <div class="step-desc">Exact plant count, seedling cost, week-by-week spray programme, and nutrition schedule — in plain language, no jargon.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Follow along to harvest</div>
+          <div class="step-desc">Check off each spray, log your harvest in crates or kg, and ask the AI any question along the way.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Upgrade when ready</div>
+          <div class="step-desc">After a successful season, one tap upgrades you to Full Farmer with all your data already there.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FULL FARMER JOURNEY -->
+    <div class="journey-card featured">
+      <div class="journey-header">
+        <div class="journey-icon icon-full">🌾</div>
+        <div>
+          <div class="journey-name">Full Farmer</div>
+          <div class="journey-tier">Annual Plan</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Set up your farm profile</div>
+          <div class="step-desc">Add your blocks, species, and staff in under 5 minutes. Import from Seasonal if upgrading.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">AI agronomist takes over</div>
+          <div class="step-desc">The AI reads your soil reports, weather, and crop history to generate personalised programmes — not generic advice.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Run your business from one screen</div>
+          <div class="step-desc">Log harvests in crates or bags, track buyer orders, pay staff, and monitor livestock health — all connected.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Know your numbers always</div>
+          <div class="step-desc">Live P&L, block-level profitability, budget vs actual — see where your money goes and where to cut.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Grow your operation</div>
+          <div class="step-desc">Add blocks, add livestock, add staff as your farm grows. No upgrade needed — the plan scales with you.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMPARISON TABLE ── -->
+<section class="compare-section z1" id="compare">
+  <div class="section-label">Compare plans</div>
+  <h2 class="section-title">What's included</h2>
+  <p class="section-sub">Every feature, side by side.</p>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>Seasonal</th>
+        <th class="col-full">Full Farmer</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="section-row"><td colspan="3">Crop Management</td></tr>
+      <tr><td>Crop selection & guided setup</td><td><span class="tick">✓</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>AI row layout recommendation (single / double / triple)</td><td><span class="tick">✓</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Plant population calculator</td><td><span class="tick">✓</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Break-even & ROI calculator</td><td><span class="tick">✓</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Week-by-week spray programme</td><td><span class="tick">✓</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Fertiliser & nutrition schedule</td><td><span class="tick">✓</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Harvest log (kg, crates, bags, boxes)</td><td><span class="tick">✓</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Number of active crops</td><td><span class="partial">1 crop</span></td><td class="col-full-bg"><span class="tick">Unlimited</span></td></tr>
+      <tr><td>Farm blocks</td><td><span class="partial">1 block</span></td><td class="col-full-bg"><span class="tick">Unlimited</span></td></tr>
+      <tr><td>AI leaf scanner & disease diagnosis</td><td><span class="partial">5 scans</span></td><td class="col-full-bg"><span class="tick">Unlimited</span></td></tr>
+      <tr><td>Soil report upload & AI nutrition plan</td><td><span class="cross">—</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+
+      <tr class="section-row"><td colspan="3">AI Agronomist</td></tr>
+      <tr><td>AI chat — crop questions</td><td><span class="tick">✓</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>AI chat — livestock & health questions</td><td><span class="cross">—</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Farm context awareness (soil, history, ledger)</td><td><span class="partial">Crop only</span></td><td class="col-full-bg"><span class="tick">Full farm</span></td></tr>
+      <tr><td>Beginner mode with pre-made decisions</td><td><span class="tick">✓</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+
+      <tr class="section-row"><td colspan="3">Livestock</td></tr>
+      <tr><td>Herd register (cattle, goats, pigs, chickens)</td><td><span class="cross">—</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Health records & vaccination schedule</td><td><span class="cross">—</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Feed & nutrition tracking</td><td><span class="cross">—</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Egg & milk production logs</td><td><span class="cross">—</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Breeding & pregnancy tracker</td><td><span class="cross">—</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+
+      <tr class="section-row"><td colspan="3">Business & Finance</td></tr>
+      <tr><td>Basic harvest income log</td><td><span class="tick">✓</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Full farm ledger (all income & expenses)</td><td><span class="cross">—</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>P&L report & budget vs actual</td><td><span class="cross">—</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Order tracking & invoicing</td><td><span class="cross">—</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Payroll & wage records</td><td><span class="cross">—</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Input inventory & reorder alerts</td><td><span class="cross">—</span></td><td class="col-full-bg"><span class="tick">✓</span></td></tr>
+      <tr><td>Market price tracker</td><td><span class="partial">View only</span></td><td class="col-full-bg"><span class="tick">Full + update</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ── MARKETS ── -->
+<section class="markets-section z1" id="markets">
+  <div class="section-label">Expanding markets</div>
+  <h2 class="section-title">Built for African farmers</h2>
+  <p class="section-sub">Launching in Zambia first. Expanding to neighbouring markets as soon as early feedback confirms it's ready. Prices, crops, and currency adapt automatically per market.</p>
+
+  <div class="markets-grid">
+    <div class="market-card active" onclick="setMarket('zm',this)">
+      <span class="market-flag">🇿🇲</span>
+      <div class="market-name">Zambia</div>
+      <div class="market-currency">ZMW</div>
+      <div style="font-size:10px;color:var(--lime);font-weight:600;margin-top:4px;">Launching 2025</div>
+    </div>
+    <div class="market-card" onclick="setMarket('zw',this)">
+      <span class="market-flag">🇿🇼</span>
+      <div class="market-name">Zimbabwe</div>
+      <div class="market-currency">USD</div>
+      <div class="market-soon">Coming soon</div>
+    </div>
+    <div class="market-card" onclick="setMarket('ke',this)">
+      <span class="market-flag">🇰🇪</span>
+      <div class="market-name">Kenya</div>
+      <div class="market-currency">KES</div>
+      <div class="market-soon">Coming soon</div>
+    </div>
+    <div class="market-card" onclick="setMarket('za',this)">
+      <span class="market-flag">🇿🇦</span>
+      <div class="market-name">South Africa</div>
+      <div class="market-currency">ZAR</div>
+      <div class="market-soon">Coming soon</div>
+    </div>
+    <div class="market-card" onclick="setMarket('gh',this)">
+      <span class="market-flag">🇬🇭</span>
+      <div class="market-name">Ghana</div>
+      <div class="market-currency">GHS</div>
+      <div class="market-soon">Coming soon</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WAITLIST ── -->
+<section class="waitlist-section z1" id="waitlist">
+  <div class="waitlist-card">
+    <span class="waitlist-emoji">🌾</span>
+    <h2 class="waitlist-title">Be first to farm smarter</h2>
+    <p class="waitlist-sub">Join the waitlist and we'll email you the moment AgriLedger opens in your market. Early members get the first 3 months free on Full Farmer.</p>
+
+    <div class="waitlist-form" id="wl-form">
+      <input type="email" id="wl-email" placeholder="your@email.com">
+      <select id="wl-tier">
+        <option value="seasonal">🌱 Seasonal</option>
+        <option value="full">🌾 Full Farmer</option>
+      </select>
+      <button class="btn-join" onclick="joinWaitlist()">Join →</button>
+    </div>
+
+    <div class="success-msg" id="wl-success">
+      ✓ You're on the list! Check your email — we've sent you a full breakdown of what to expect.
+    </div>
+
+    <div class="waitlist-proof">
+      <span>No spam</span>
+      <span class="dot"></span>
+      <span>No payment now</span>
+      <span class="dot"></span>
+      <span>Unsubscribe anytime</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ── -->
+<section class="faq-section z1">
+  <div class="section-label">Questions</div>
+  <h2 class="section-title" style="text-align:left;font-size:28px;margin-bottom:28px;">Frequently asked</h2>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What exactly is a "season"? <span class="faq-arrow">↓</span></div>
+    <div class="faq-a"><div class="faq-a-inner">A season is one complete crop cycle from planting to harvest. For most vegetables like tomatoes or cabbage, that's 10–16 weeks. For longer crops like ginger, it's 6–8 months. You pay once per cycle. If you want to plant a second crop (different or same), you buy another seasonal plan — or upgrade to Full Farmer for unlimited.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Can a beginner really use this? <span class="faq-arrow">↓</span></div>
+    <div class="faq-a"><div class="faq-a-inner">Absolutely — that's the core promise of the Seasonal plan. When you select "Beginner" during setup, AgriLedger makes all the key decisions for you: row layout, spacing, spray programme, fertiliser schedule. You follow along step by step. If you're unsure about anything, the AI agronomist explains it in plain language, no technical background needed.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What crops are supported? <span class="faq-arrow">↓</span></div>
+    <div class="faq-a"><div class="faq-a-inner">At launch: tomato, strawberry, cabbage, onion, pepper, ginger, maize, and groundnut. We're adding more based on what our early farmers grow. If your crop isn't listed, the AI agronomist can still advise you — and we'll prioritise adding it in the next update.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What livestock are supported? <span class="faq-arrow">↓</span></div>
+    <div class="faq-a"><div class="faq-a-inner">Full Farmer supports cattle, goats, pigs, chickens (layers and broilers), and sheep. Each species has its own health records, vaccination schedule, deworming log, feed tracking, and production records — milk yield for cattle and goats, egg count for layers, weight gain for pigs and broilers. You can also track breeding, pregnancy, and offspring survival. If you keep a species not listed, let us know and we will prioritise adding it.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Does my data carry over if I upgrade to Full Farmer? <span class="faq-arrow">↓</span></div>
+    <div class="faq-a"><div class="faq-a-inner">Yes. Every harvest log, spray record, and crop cycle from your Seasonal plan is available the moment you upgrade. Nothing is lost — it all becomes part of your farm history that the AI uses to give you better advice over time.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Is AgriLedger available outside Zambia? <span class="faq-arrow">↓</span></div>
+    <div class="faq-a"><div class="faq-a-inner">We're launching in Zambia first. Zimbabwe, Kenya, South Africa, and Ghana are next. The platform is built to support any market — local currencies, local crops, local market prices. If your country isn't listed, join the waitlist and tell us where you are. That helps us prioritise.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What happens to my data if I don't renew? <span class="faq-arrow">↓</span></div>
+    <div class="faq-a"><div class="faq-a-inner">Your data is yours. If you don't renew, you can export everything — your harvest records, financial logs, and spray history — as a PDF or spreadsheet before your plan expires. We hold it for 90 days after expiry so you have time to decide.</div></div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="z1">
+  <div class="footer-logo">Agri<span>Ledger</span> AI</div>
+  <div class="footer-text">
+    Helping African farmers farm smarter, one season at a time.<br>
+    Currently launching in Zambia 🇿🇲
+  </div>
+  <div class="footer-links">
+    <a href="#waitlist">Join Waitlist</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="mailto:hello@agriledger.app">hello@agriledger.app</a>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── MARKET DATA ── swap per market at build time
+const markets = {
+  zm: { curr:'ZMW', s:'110', f:'1050', sUsd:'≈ $6 USD · per crop cycle', fUsd:'≈ $55 USD · less than ZMW 88/month', flag:'🇿🇲', name:'Zambia' },
+  zw: { curr:'USD', s:'6',  f:'55',  sUsd:'USD pricing · per crop cycle', fUsd:'USD pricing · billed annually', flag:'🇿🇼', name:'Zimbabwe' },
+  ke: { curr:'KES', s:'780',f:'6500',sUsd:'≈ $6 USD · per crop cycle', fUsd:'≈ $55 USD · less than KES 560/month', flag:'🇰🇪', name:'Kenya' },
+  za: { curr:'ZAR', s:'110', f:'1000', sUsd:'≈ $6 USD · per crop cycle', fUsd:'≈ $55 USD · less than ZAR 90/month', flag:'🇿🇦', name:'South Africa' },
+  gh: { curr:'GHS', s:'80', f:'650', sUsd:'≈ $6 USD · per crop cycle', fUsd:'≈ $55 USD · billed annually', flag:'🇬🇭', name:'Ghana' }
+};
+
+let currentMarket = 'zm';
+
+function setMarket(code, el) {
+  currentMarket = code;
+  const m = markets[code];
+  document.getElementById('s-curr').textContent = m.curr;
+  document.getElementById('s-price').textContent = m.s;
+  document.getElementById('s-usd').textContent = m.sUsd;
+  document.getElementById('f-curr').textContent = m.curr;
+  document.getElementById('f-price').textContent = m.f;
+  document.getElementById('f-usd').textContent = m.fUsd;
+
+  // update all market badge active states
+  document.querySelectorAll('.market-badge').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.market-card').forEach(c => c.classList.remove('active'));
+  if(el) el.classList.add('active');
+
+  // sync market cards section
+  document.querySelectorAll('.market-card').forEach(c => {
+    if(c.querySelector('.market-name').textContent === m.name) c.classList.add('active');
+  });
+
+  showToast(m.flag + ' Switched to ' + m.name + ' pricing');
+}
+
+// ── WAITLIST ──
+function openWaitlist(tier) {
+  document.getElementById('wl-tier').value = tier;
+  document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' });
+}
+
+function joinWaitlist() {
+  const email = document.getElementById('wl-email').value.trim();
+  const tier = document.getElementById('wl-tier').value;
+  const tierLabel = tier === 'full' ? 'Full Farmer' : 'Seasonal';
+
+  if (!email || !email.includes('@')) {
+    showToast('Please enter a valid email address');
+    return;
+  }
+
+  // In production: POST to your Supabase waitlist table here
+  // fetch('/api/waitlist', { method:'POST', body: JSON.stringify({ email, tier, market: currentMarket }) })
+
+  document.getElementById('wl-form').style.display = 'none';
+  document.getElementById('wl-success').style.display = 'block';
+  showToast('🌾 You\'re on the ' + tierLabel + ' waitlist!');
+
+  // Simulate sending confirmation email
+  console.log('Waitlist signup:', { email, tier, market: currentMarket });
+}
+
+// ── FAQ ──
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── BILLING TOGGLE (for future monthly/annual) ──
+function initToggle() {
+  const track = document.getElementById('billing-toggle');
+  if (!track) return;
+  track.addEventListener('click', () => {
+    track.classList.toggle('on');
+    const isAnnual = track.classList.contains('on');
+    document.getElementById('billing-annual').classList.toggle('active', isAnnual);
+    document.getElementById('billing-monthly').classList.toggle('active', !isAnnual);
+  });
+}
+initToggle();
+</script>
+</body>
+</html>

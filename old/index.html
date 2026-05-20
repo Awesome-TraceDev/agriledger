@@ -4,11 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AgriLedger AI — Farm Management</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0a1f08">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="AgriLedger AI">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -282,12 +277,6 @@ hr{border:none;border-top:1px solid var(--bord);margin:12px 0;}
     <div class="s-item" onclick="nav('orders',this)"><i class="ti ti-truck"></i> Orders <span class="pill pill-green">2</span></div>
     <div class="s-item" onclick="nav('payroll',this)"><i class="ti ti-users"></i> Payroll</div>
     <div class="s-item" onclick="nav('market',this)"><i class="ti ti-building-store"></i> Market Prices</div>
-  </div>
-
-  <div class="s-section">Account</div>
-  <div class="s-group">
-    <div class="s-item" onclick="nav('plans',this)" style="background:linear-gradient(135deg,rgba(74,125,31,0.25),rgba(47,90,20,0.15));border:1px solid rgba(74,125,31,0.3);color:#fff;"><i class="ti ti-sparkles" style="color:var(--g300);opacity:1;"></i> Plans &amp; Pricing <span class="pill pill-green" style="font-size:9px;">Beta</span></div>
-    <div class="s-item" onclick="nav('mobile-app',this)"><i class="ti ti-device-mobile"></i> Mobile App</div>
   </div>
 
   <div class="s-footer">
@@ -847,139 +836,6 @@ hr{border:none;border-top:1px solid var(--bord);margin:12px 0;}
     <div class="panel" id="panel-stock-feed"><div class="pg-title">Livestock Feed Stock</div><div class="card"><div class="card-header"><span class="card-title">Feed Inventory</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-stock-entry')"><i class="ti ti-plus"></i> Add</button></div><div class="tbl-wrap"><table><thead><tr><th>Feed</th><th>Species</th><th>In Stock</th><th>Status</th></tr></thead><tbody><tr><td>Layer mash 16%</td><td>Chickens</td><td style="color:var(--r600);font-weight:600;">12 kg</td><td><span class="badge br">Reorder Now</span></td></tr><tr><td>Broiler finisher</td><td>Chickens</td><td>8 kg</td><td><span class="badge ba">Low</span></td></tr><tr><td>Goat pellets</td><td>Goats</td><td>22 kg</td><td><span class="badge bg">OK</span></td></tr><tr><td>Pig grower meal</td><td>Pigs</td><td>30 kg</td><td><span class="badge bg">OK</span></td></tr></tbody></table></div></div></div>
     <div class="panel" id="panel-stock-equip"><div class="pg-title">Equipment Register</div><div class="card"><div class="card-header"><span class="card-title">Farm Equipment</span><button class="btn btn-primary btn-sm" onclick="openModal('modal-stock-entry')"><i class="ti ti-plus"></i> Add</button></div><div class="tbl-wrap"><table><thead><tr><th>Item</th><th>Condition</th><th>Last service</th><th>Notes</th></tr></thead><tbody><tr><td>Knapsack sprayer ×3</td><td><span class="badge bg">Good</span></td><td>Jan 2025</td><td>Seals replaced</td></tr><tr><td>Irrigation pump (2HP)</td><td><span class="badge bg">Good</span></td><td>Feb 2025</td><td>Running well</td></tr><tr><td>Pickup truck</td><td><span class="badge ba">Service due</span></td><td>Nov 2024</td><td>Due 5,000km service</td></tr><tr><td>Tractor (rented)</td><td><span class="badge bx">Rented</span></td><td>—</td><td>ZMW 800/day hire</td></tr></tbody></table></div></div></div>
 
-
-    <!-- ═══ PLANS & PRICING ═══ -->
-    <div class="panel" id="panel-plans">
-      <div class="pg-title">Plans &amp; Pricing</div>
-      <div class="pg-sub">AgriLedger AI is currently in beta. Join the waitlist to be first when we launch — early members get 3 months free on Full Farmer.</div>
-
-      <!-- DEMO BANNER -->
-      <div style="background:linear-gradient(135deg,var(--g700),var(--g600));border-radius:var(--r16);padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
-        <div>
-          <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g200);margin-bottom:4px;">You are viewing a live demo</div>
-          <div style="font-size:14px;color:#fff;font-weight:500;">All features are active. This is exactly what you get as a Full Farmer member.</div>
-        </div>
-        <a href="agriledger-pricing.html" target="_blank" class="btn btn-sm" style="background:#fff;color:var(--g700);border-color:#fff;font-weight:700;white-space:nowrap;"><i class="ti ti-external-link"></i> Full Pricing Page</a>
-      </div>
-
-      <!-- TIER CARDS -->
-      <div class="g2" style="margin-bottom:20px;">
-
-        <!-- SEASONAL -->
-        <div class="card" style="border:1px solid var(--bord2);position:relative;overflow:hidden;">
-          <div style="position:absolute;top:0;right:0;background:var(--g100);color:var(--g700);font-size:10px;font-weight:700;padding:4px 12px;border-radius:0 var(--r16) 0 var(--r12);letter-spacing:.08em;text-transform:uppercase;">Seasonal</div>
-          <div style="margin-bottom:6px;margin-top:4px;"><span style="font-size:10px;font-weight:700;color:var(--tx4);text-transform:uppercase;letter-spacing:.08em;">Single Season Plan</span></div>
-          <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:2px;">
-            <span style="font-family:var(--font-display);font-size:42px;color:var(--tx1);line-height:1;">110</span>
-            <span style="font-size:14px;color:var(--tx3);font-weight:600;">ZMW</span>
-            <span style="font-size:13px;color:var(--tx4);">/ season</span>
-          </div>
-          <div style="font-size:11px;color:var(--tx4);margin-bottom:18px;">≈ $6 USD · one crop cycle</div>
-          <div style="font-size:13px;color:var(--tx3);margin-bottom:16px;line-height:1.6;">Perfect for first-time growers planting a single crop. Guided setup, AI spray programme, harvest tracking — everything for one successful season.</div>
-          <ul style="list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:20px;">
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);"><span style="color:var(--g600);font-weight:700;flex-shrink:0;">✓</span> One crop, fully guided (beginner mode)</li>
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);"><span style="color:var(--g600);font-weight:700;flex-shrink:0;">✓</span> AI row layout recommendation</li>
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);"><span style="color:var(--g600);font-weight:700;flex-shrink:0;">✓</span> Plant population calculator &amp; cost estimate</li>
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);"><span style="color:var(--g600);font-weight:700;flex-shrink:0;">✓</span> Week-by-week spray programme</li>
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);"><span style="color:var(--g600);font-weight:700;flex-shrink:0;">✓</span> Harvest log — crates, bags, or kg</li>
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);"><span style="color:var(--g600);font-weight:700;flex-shrink:0;">✓</span> AI agronomist (crop questions only)</li>
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx4);"><span style="flex-shrink:0;">–</span> Livestock, ledger, payroll, P&amp;L</li>
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx4);"><span style="flex-shrink:0;">–</span> Multi-block &amp; multi-crop</li>
-          </ul>
-          <button class="btn" style="width:100%;font-weight:600;" onclick="openWaitlistModal('seasonal')"><i class="ti ti-mail"></i> Join Seasonal Waitlist</button>
-          <div style="text-align:center;font-size:11px;color:var(--tx4);margin-top:8px;">No payment now · Notified at launch</div>
-        </div>
-
-        <!-- FULL FARMER -->
-        <div class="card" style="border:2px solid var(--g500);background:linear-gradient(160deg,var(--g50),var(--surf));position:relative;overflow:hidden;">
-          <div style="position:absolute;top:0;right:0;background:var(--g600);color:#fff;font-size:10px;font-weight:700;padding:4px 12px;border-radius:0 var(--r16) 0 var(--r12);letter-spacing:.08em;text-transform:uppercase;">Most Popular</div>
-          <div style="margin-bottom:6px;margin-top:4px;"><span style="font-size:10px;font-weight:700;color:var(--g600);text-transform:uppercase;letter-spacing:.08em;">Full Farmer — Annual</span></div>
-          <div style="display:flex;align-items:baseline;gap:4px;margin-bottom:2px;">
-            <span style="font-family:var(--font-display);font-size:42px;color:var(--g700);line-height:1;">1,050</span>
-            <span style="font-size:14px;color:var(--g600);font-weight:600;">ZMW</span>
-            <span style="font-size:13px;color:var(--tx4);">/ year</span>
-          </div>
-          <div style="font-size:11px;color:var(--tx4);margin-bottom:18px;">≈ $55 USD · less than ZMW 88/month</div>
-          <div style="font-size:13px;color:var(--tx3);margin-bottom:16px;line-height:1.6;">Complete mixed-farm management. Crops, livestock, staff, and finances — the full AgriLedger platform you're using right now.</div>
-          <ul style="list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:20px;">
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);"><span style="color:var(--g600);font-weight:700;flex-shrink:0;">✓</span> Everything in Seasonal — unlimited crops &amp; blocks</li>
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);"><span style="color:var(--g600);font-weight:700;flex-shrink:0;">✓</span> Livestock — cattle, goats, pigs, chickens, sheep</li>
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);"><span style="color:var(--g600);font-weight:700;flex-shrink:0;">✓</span> Full farm ledger, P&amp;L, budget vs actual</li>
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);"><span style="color:var(--g600);font-weight:700;flex-shrink:0;">✓</span> Payroll — permanent staff &amp; casual workers</li>
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);"><span style="color:var(--g600);font-weight:700;flex-shrink:0;">✓</span> Order tracking &amp; invoicing</li>
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);"><span style="color:var(--g600);font-weight:700;flex-shrink:0;">✓</span> AI leaf scanner — unlimited scans</li>
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);"><span style="color:var(--g600);font-weight:700;flex-shrink:0;">✓</span> Soil report parser &amp; nutrition calendar</li>
-            <li style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--tx2);"><span style="color:var(--g600);font-weight:700;flex-shrink:0;">✓</span> Mobile field companion app (Android — coming soon)</li>
-          </ul>
-          <button class="btn btn-primary" style="width:100%;font-weight:700;" onclick="openWaitlistModal('full')"><i class="ti ti-sparkles"></i> Join Full Farmer Waitlist — 3 months free</button>
-          <div style="text-align:center;font-size:11px;color:var(--tx4);margin-top:8px;">Early access · No payment now</div>
-        </div>
-      </div>
-
-      <!-- WAITLIST INLINE FORM -->
-      <div class="card" id="plans-waitlist-card" style="max-width:560px;margin:0 auto;">
-        <div class="card-header"><span class="card-title" id="plans-wl-title">Join the Waitlist</span></div>
-        <div class="fr fr-2">
-          <div class="fg"><label>Your email</label><input type="email" id="plans-wl-email" placeholder="farmer@email.com"></div>
-          <div class="fg"><label>Plan</label>
-            <select id="plans-wl-tier">
-              <option value="seasonal">🌱 Seasonal — ZMW 110</option>
-              <option value="full">🌾 Full Farmer — ZMW 1,050/yr</option>
-            </select>
-          </div>
-        </div>
-        <div class="fr fr-2">
-          <div class="fg"><label>Your name (optional)</label><input type="text" id="plans-wl-name" placeholder="e.g. Mutale"></div>
-          <div class="fg"><label>Country</label>
-            <select id="plans-wl-country">
-              <option>🇿🇲 Zambia</option>
-              <option>🇿🇼 Zimbabwe</option>
-              <option>🇰🇪 Kenya</option>
-              <option>🇿🇦 South Africa</option>
-              <option>🇬🇭 Ghana</option>
-              <option>Other</option>
-            </select>
-          </div>
-        </div>
-        <div id="plans-wl-success" style="display:none;" class="alert alert-ok"><i class="ti ti-check"></i><div><strong>You're on the list!</strong> Check your email — we've sent you a full breakdown of what to expect at launch.</div></div>
-        <button class="btn btn-primary" style="width:100%;" onclick="submitPlansWaitlist()"><i class="ti ti-mail"></i> Join Waitlist — I want early access</button>
-        <div style="text-align:center;font-size:11px;color:var(--tx4);margin-top:10px;">No spam · No payment now · Unsubscribe anytime</div>
-      </div>
-    </div>
-
-    <!-- ═══ MOBILE APP ═══ -->
-    <div class="panel" id="panel-mobile-app">
-      <div class="pg-title">Mobile Field Companion</div>
-      <div class="pg-sub">Take AgriLedger into the field — log harvests, scan leaves, and check your spray schedule from anywhere, even without signal.</div>
-
-      <div class="g2" style="margin-bottom:20px;">
-        <div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 28px;">
-          <div style="font-size:56px;margin-bottom:16px;">📱</div>
-          <div style="font-family:var(--font-display);font-size:22px;color:var(--tx1);margin-bottom:8px;">Android App</div>
-          <div style="font-size:13px;color:var(--tx3);line-height:1.65;margin-bottom:20px;">A dedicated field companion for Android — optimised for one-handed use in the field. Full offline support so it works even with no data signal.</div>
-          <div class="badge bg" style="margin-bottom:16px;font-size:11px;padding:5px 14px;">Coming after beta launch</div>
-          <div style="font-size:12px;color:var(--tx4);">Built with Expo · Talks to the same Supabase backend</div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <div class="card">
-            <div class="card-title" style="margin-bottom:12px;">What the app will do</div>
-            <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
-              <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:18px;flex-shrink:0;">📦</span><div><div style="font-weight:600;">Harvest logging on the spot</div><div style="color:var(--tx4);">Tap to log crates loaded onto the truck — no laptop needed</div></div></div>
-              <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:18px;flex-shrink:0;">🌿</span><div><div style="font-weight:600;">AI leaf scanner</div><div style="color:var(--tx4);">Point your phone at a sick leaf — diagnosis in 3 seconds</div></div></div>
-              <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:18px;flex-shrink:0;">✅</span><div><div style="font-weight:600;">Daily spray checklist</div><div style="color:var(--tx4);">See today's tasks, mark done, get push reminders</div></div></div>
-              <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:18px;flex-shrink:0;">🐄</span><div><div style="font-weight:600;">Quick livestock logs</div><div style="color:var(--tx4);">Feed, treatment, and egg count — one tap per entry</div></div></div>
-              <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:18px;flex-shrink:0;">📶</span><div><div style="font-weight:600;">Works offline</div><div style="color:var(--tx4);">All logs saved locally, syncs to dashboard when signal returns</div></div></div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-title" style="margin-bottom:10px;">Use the web app now</div>
-            <div style="font-size:13px;color:var(--tx3);line-height:1.65;margin-bottom:12px;">While the Android app is in development, you can install AgriLedger as a Progressive Web App directly from your phone browser. Tap <strong>Add to Home Screen</strong> in Chrome for an app-like experience.</div>
-            <div class="alert alert-ok"><i class="ti ti-info-circle"></i><div>Open this page in <strong>Chrome on Android</strong>, tap the menu (⋮), and select <strong>"Add to Home Screen"</strong>. It will appear on your home screen like a native app.</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div><!-- /content -->
 </div><!-- /main -->
 </div><!-- /shell -->
@@ -1145,8 +1001,8 @@ hr{border:none;border-top:1px solid var(--bord);margin:12px 0;}
 
 <script>
 // ── NAV ──
-const titles={overview:'Dashboard',agronomist:'AI Agronomist',plans:'Plans & Pricing',"mobile-app":'Mobile App',weather:'Weather & Season','crop-blocks':'Farm Blocks','crop-cycles':'Crop Cycles','crop-calc':'AI Calculator','crop-spray':'Spray Schedule','crop-scanner':'Leaf Scanner','crop-harvest':'Harvest Log','crop-soil':'Soil Reports','lv-herd':'Herd Register','lv-health':'Health & Vaccinations','lv-feed':'Feed & Nutrition','lv-prod':'Production Records','lv-breeding':'Breeding Records','lv-sales':'Livestock Sales','acc-ledger':'Farm Ledger','acc-income':'Income','acc-expenses':'Expenses','acc-pl':'P&L Report','acc-budget':'Budget vs Actual','stock-all':'All Inventory','stock-chem':'Chemicals','stock-fert':'Fertilisers','stock-feed':'Livestock Feed','stock-equip':'Equipment',orders:'Order Tracking',payroll:'Payroll',market:'Market Prices'};
-const subs={overview:'',agronomist:'',plans:'',"mobile-app":'',weather:'','crop-blocks':'Crop Management','crop-cycles':'Crop Management','crop-calc':'Crop Management','crop-spray':'Crop Management','crop-scanner':'Crop Management','crop-harvest':'Crop Management','crop-soil':'Crop Management','lv-herd':'Livestock','lv-health':'Livestock','lv-feed':'Livestock','lv-prod':'Livestock','lv-breeding':'Livestock','lv-sales':'Livestock','acc-ledger':'Accounts','acc-income':'Accounts','acc-expenses':'Accounts','acc-pl':'Accounts','acc-budget':'Accounts','stock-all':'Stock & Inputs','stock-chem':'Stock & Inputs','stock-fert':'Stock & Inputs','stock-feed':'Stock & Inputs','stock-equip':'Stock & Inputs',orders:'Business',payroll:'Business',market:'Business'};
+const titles={overview:'Dashboard',agronomist:'AI Agronomist',weather:'Weather & Season','crop-blocks':'Farm Blocks','crop-cycles':'Crop Cycles','crop-calc':'AI Calculator','crop-spray':'Spray Schedule','crop-scanner':'Leaf Scanner','crop-harvest':'Harvest Log','crop-soil':'Soil Reports','lv-herd':'Herd Register','lv-health':'Health & Vaccinations','lv-feed':'Feed & Nutrition','lv-prod':'Production Records','lv-breeding':'Breeding Records','lv-sales':'Livestock Sales','acc-ledger':'Farm Ledger','acc-income':'Income','acc-expenses':'Expenses','acc-pl':'P&L Report','acc-budget':'Budget vs Actual','stock-all':'All Inventory','stock-chem':'Chemicals','stock-fert':'Fertilisers','stock-feed':'Livestock Feed','stock-equip':'Equipment',orders:'Order Tracking',payroll:'Payroll',market:'Market Prices'};
+const subs={overview:'',agronomist:'',weather:'','crop-blocks':'Crop Management','crop-cycles':'Crop Management','crop-calc':'Crop Management','crop-spray':'Crop Management','crop-scanner':'Crop Management','crop-harvest':'Crop Management','crop-soil':'Crop Management','lv-herd':'Livestock','lv-health':'Livestock','lv-feed':'Livestock','lv-prod':'Livestock','lv-breeding':'Livestock','lv-sales':'Livestock','acc-ledger':'Accounts','acc-income':'Accounts','acc-expenses':'Accounts','acc-pl':'Accounts','acc-budget':'Accounts','stock-all':'Stock & Inputs','stock-chem':'Stock & Inputs','stock-fert':'Stock & Inputs','stock-feed':'Stock & Inputs','stock-equip':'Stock & Inputs',orders:'Business',payroll:'Business',market:'Business'};
 const subParents={'crop-blocks':'sub-crops','crop-cycles':'sub-crops','crop-calc':'sub-crops','crop-spray':'sub-crops','crop-scanner':'sub-crops','crop-harvest':'sub-crops','crop-soil':'sub-crops','lv-herd':'sub-lv','lv-health':'sub-lv','lv-feed':'sub-lv','lv-prod':'sub-lv','lv-breeding':'sub-lv','lv-sales':'sub-lv','acc-ledger':'sub-acc','acc-income':'sub-acc','acc-expenses':'sub-acc','acc-pl':'sub-acc','acc-budget':'sub-acc','stock-all':'sub-stock','stock-chem':'sub-stock','stock-fert':'sub-stock','stock-feed':'sub-stock','stock-equip':'sub-stock'};
 function nav(id,el){
   // Show correct panel
@@ -1408,39 +1264,6 @@ document.addEventListener('keydown',e=>{if(e.key==='b'&&e.ctrlKey){const s=docum
 
 // Init date fields to today
 document.querySelectorAll('input[type=date]').forEach(d=>{d.value=new Date().toISOString().split('T')[0];});
-
-// ── PLANS WAITLIST ──
-function openWaitlistModal(tier){
-  nav('plans',null);
-  const sel=document.getElementById('plans-wl-tier');
-  if(sel) sel.value=tier;
-  setTimeout(()=>{const el=document.getElementById('plans-waitlist-card');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},200);
-}
-
-function submitPlansWaitlist(){
-  const email=document.getElementById('plans-wl-email').value.trim();
-  const tier=document.getElementById('plans-wl-tier').value;
-  const name=document.getElementById('plans-wl-name').value.trim();
-  const country=document.getElementById('plans-wl-country').value;
-  if(!email||!email.includes('@')){showToast('Please enter a valid email address');return;}
-  // Production: POST to Supabase waitlist table
-  // fetch('/api/waitlist',{method:'POST',body:JSON.stringify({email,tier,name,country,source:'dashboard'})})
-  console.log('Waitlist signup:',{email,tier,name,country,source:'dashboard'});
-  document.getElementById('plans-wl-success').style.display='flex';
-  document.getElementById('plans-wl-email').value='';
-  document.getElementById('plans-wl-name').value='';
-  const tierLabel=tier==='full'?'Full Farmer':'Seasonal';
-  showToast('You are on the '+tierLabel+' waitlist!');
-}
-
-// ── TOAST ──
-function showToast(msg){
-  let t=document.getElementById('toast-bar');
-  if(!t){t=document.createElement('div');t.id='toast-bar';t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--g700);color:#fff;padding:11px 22px;border-radius:100px;font-size:13px;font-weight:600;z-index:9999;transition:transform 0.3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.3);';document.body.appendChild(t);}
-  t.textContent=msg;
-  setTimeout(()=>t.style.transform='translateX(-50%) translateY(0)',10);
-  setTimeout(()=>t.style.transform='translateX(-50%) translateY(80px)',3000);
-}
 </script>
 </body>
 </html>
