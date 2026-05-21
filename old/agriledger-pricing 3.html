@@ -1336,27 +1336,13 @@ footer {
     <h2 class="waitlist-title">Be first to farm smarter</h2>
     <p class="waitlist-sub">Join the waitlist and we'll email you the moment AgriLedger opens in your market. Early members get the first 3 months free on Full Farmer.</p>
 
-    <div id="wl-form">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-        <input type="email" id="wl-email" placeholder="your@email.com" style="padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#f5f0e8;font-family:inherit;font-size:14px;outline:none;">
-        <input type="text" id="wl-name" placeholder="Your name (optional)" style="padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#f5f0e8;font-family:inherit;font-size:14px;outline:none;">
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-        <select id="wl-tier" style="padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#f5f0e8;font-family:inherit;font-size:13px;outline:none;cursor:pointer;">
-          <option value="seasonal">🌱 Seasonal — ZMW 110</option>
-          <option value="full">🌾 Full Farmer — ZMW 1,050/yr</option>
-        </select>
-        <select id="wl-country" style="padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#f5f0e8;font-family:inherit;font-size:13px;outline:none;cursor:pointer;">
-          <option value="zm">🇿🇲 Zambia</option>
-          <option value="zw">🇿🇼 Zimbabwe</option>
-          <option value="ke">🇰🇪 Kenya</option>
-          <option value="za">🇿🇦 South Africa</option>
-          <option value="gh">🇬🇭 Ghana</option>
-          <option value="other">🌍 Other</option>
-        </select>
-      </div>
-      <input type="tel" id="wl-phone" placeholder="WhatsApp number (optional) e.g. +260 97x xxx xxx" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#f5f0e8;font-family:inherit;font-size:14px;outline:none;margin-bottom:10px;display:block;">
-      <button class="btn-join" onclick="joinWaitlist()" style="width:100%;">Join Waitlist — Get Early Access →</button>
+    <div class="waitlist-form" id="wl-form">
+      <input type="email" id="wl-email" placeholder="your@email.com">
+      <select id="wl-tier">
+        <option value="seasonal">🌱 Seasonal</option>
+        <option value="full">🌾 Full Farmer</option>
+      </select>
+      <button class="btn-join" onclick="joinWaitlist()">Join →</button>
     </div>
 
     <div class="success-msg" id="wl-success">
@@ -1480,17 +1466,12 @@ function setMarket(code, el) {
 // ── WAITLIST ──
 function openWaitlist(tier) {
   document.getElementById('wl-tier').value = tier;
-  const countryEl = document.getElementById('wl-country');
-  if (countryEl) countryEl.value = currentMarket;
   document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' });
 }
 
 function joinWaitlist() {
-  const email   = document.getElementById('wl-email').value.trim();
-  const name    = document.getElementById('wl-name').value.trim();
-  const tier    = document.getElementById('wl-tier').value;
-  const country = document.getElementById('wl-country').value;
-  const phone   = document.getElementById('wl-phone').value.trim();
+  const email = document.getElementById('wl-email').value.trim();
+  const tier = document.getElementById('wl-tier').value;
   const tierLabel = tier === 'full' ? 'Full Farmer' : 'Seasonal';
 
   if (!email || !email.includes('@')) {
@@ -1507,12 +1488,10 @@ function joinWaitlist() {
       'Prefer': 'return=minimal'
     },
     body: JSON.stringify({
-      email:   email,
-      name:    name   || null,
-      tier:    tier,
-      country: country,
-      phone:   phone  || null,
-      source:  'pricing-page'
+      email: email,
+      tier: tier,
+      country: currentMarket,
+      source: 'pricing-page'
     })
   })
   .then(res => {

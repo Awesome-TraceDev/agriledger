@@ -932,17 +932,14 @@ hr{border:none;border-top:1px solid var(--bord);margin:12px 0;}
           <div class="fg"><label>Your name (optional)</label><input type="text" id="plans-wl-name" placeholder="e.g. Mutale"></div>
           <div class="fg"><label>Country</label>
             <select id="plans-wl-country">
-              <option value="zm">🇿🇲 Zambia</option>
-              <option value="zw">🇿🇼 Zimbabwe</option>
-              <option value="ke">🇰🇪 Kenya</option>
-              <option value="za">🇿🇦 South Africa</option>
-              <option value="gh">🇬🇭 Ghana</option>
-              <option value="other">🌍 Other</option>
+              <option>🇿🇲 Zambia</option>
+              <option>🇿🇼 Zimbabwe</option>
+              <option>🇰🇪 Kenya</option>
+              <option>🇿🇦 South Africa</option>
+              <option>🇬🇭 Ghana</option>
+              <option>Other</option>
             </select>
           </div>
-        </div>
-        <div class="fr fr-2" style="margin-top:0;">
-          <div class="fg" style="grid-column:1/-1;"><label>WhatsApp number (optional)</label><input type="tel" id="plans-wl-phone" placeholder="e.g. +260 97x xxx xxx"></div>
         </div>
         <div id="plans-wl-success" style="display:none;" class="alert alert-ok"><i class="ti ti-check"></i><div><strong>You're on the list!</strong> Check your email — we've sent you a full breakdown of what to expect at launch.</div></div>
         <button class="btn btn-primary" style="width:100%;" onclick="submitPlansWaitlist()"><i class="ti ti-mail"></i> Join Waitlist — I want early access</button>
@@ -1425,7 +1422,6 @@ function submitPlansWaitlist(){
   const tier=document.getElementById('plans-wl-tier').value;
   const name=document.getElementById('plans-wl-name').value.trim();
   const country=document.getElementById('plans-wl-country').value;
-  const phone=document.getElementById('plans-wl-phone').value.trim();
   if(!email||!email.includes('@')){showToast('Please enter a valid email address');return;}
   fetch('https://fzmqmbohrulnhbaavjvv.supabase.co/rest/v1/waitlist',{
     method:'POST',
@@ -1438,9 +1434,8 @@ function submitPlansWaitlist(){
     body:JSON.stringify({
       email:email,
       tier:tier,
-      name:name||null,
+      name:name,
       country:country,
-      phone:phone||null,
       source:'dashboard'
     })
   })
@@ -1449,7 +1444,6 @@ function submitPlansWaitlist(){
       document.getElementById('plans-wl-success').style.display='flex';
       document.getElementById('plans-wl-email').value='';
       document.getElementById('plans-wl-name').value='';
-      document.getElementById('plans-wl-phone').value='';
       const tierLabel=tier==='full'?'Full Farmer':'Seasonal';
       showToast('You are on the '+tierLabel+' waitlist!');
     }else{
