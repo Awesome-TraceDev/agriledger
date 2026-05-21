@@ -1423,35 +1423,14 @@ function submitPlansWaitlist(){
   const name=document.getElementById('plans-wl-name').value.trim();
   const country=document.getElementById('plans-wl-country').value;
   if(!email||!email.includes('@')){showToast('Please enter a valid email address');return;}
-  fetch('https://fzmqmbohrulnhbaavjvv.supabase.co/rest/v1/waitlist',{
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'apikey':'sb_publishable_9iDwAtICPWMPl6-kBkNj_A_Th-LnAfb',
-      'Authorization':'Bearer sb_publishable_9iDwAtICPWMPl6-kBkNj_A_Th-LnAfb',
-      'Prefer':'return=minimal'
-    },
-    body:JSON.stringify({
-      email:email,
-      tier:tier,
-      name:name,
-      country:country,
-      source:'dashboard'
-    })
-  })
-  .then(res=>{
-    if(res.ok){
-      document.getElementById('plans-wl-success').style.display='flex';
-      document.getElementById('plans-wl-email').value='';
-      document.getElementById('plans-wl-name').value='';
-      const tierLabel=tier==='full'?'Full Farmer':'Seasonal';
-      showToast('You are on the '+tierLabel+' waitlist!');
-    }else{
-      res.text().then(t=>console.error('Supabase error:',t));
-      showToast('Something went wrong — please try again');
-    }
-  })
-  .catch(()=>showToast('Connection error — please check your internet'));
+  // Production: POST to Supabase waitlist table
+  // fetch('/api/waitlist',{method:'POST',body:JSON.stringify({email,tier,name,country,source:'dashboard'})})
+  console.log('Waitlist signup:',{email,tier,name,country,source:'dashboard'});
+  document.getElementById('plans-wl-success').style.display='flex';
+  document.getElementById('plans-wl-email').value='';
+  document.getElementById('plans-wl-name').value='';
+  const tierLabel=tier==='full'?'Full Farmer':'Seasonal';
+  showToast('You are on the '+tierLabel+' waitlist!');
 }
 
 // ── TOAST ──

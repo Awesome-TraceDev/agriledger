@@ -1479,32 +1479,15 @@ function joinWaitlist() {
     return;
   }
 
-  fetch('https://fzmqmbohrulnhbaavjvv.supabase.co/rest/v1/waitlist', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': 'sb_publishable_9iDwAtICPWMPl6-kBkNj_A_Th-LnAfb',
-      'Authorization': 'Bearer sb_publishable_9iDwAtICPWMPl6-kBkNj_A_Th-LnAfb',
-      'Prefer': 'return=minimal'
-    },
-    body: JSON.stringify({
-      email: email,
-      tier: tier,
-      country: currentMarket,
-      source: 'pricing-page'
-    })
-  })
-  .then(res => {
-    if (res.ok) {
-      document.getElementById('wl-form').style.display = 'none';
-      document.getElementById('wl-success').style.display = 'block';
-      showToast('You are on the ' + tierLabel + ' waitlist!');
-    } else {
-      res.text().then(t => console.error('Supabase error:', t));
-      showToast('Something went wrong — please try again');
-    }
-  })
-  .catch(() => showToast('Connection error — please check your internet'));
+  // In production: POST to your Supabase waitlist table here
+  // fetch('/api/waitlist', { method:'POST', body: JSON.stringify({ email, tier, market: currentMarket }) })
+
+  document.getElementById('wl-form').style.display = 'none';
+  document.getElementById('wl-success').style.display = 'block';
+  showToast('🌾 You\'re on the ' + tierLabel + ' waitlist!');
+
+  // Simulate sending confirmation email
+  console.log('Waitlist signup:', { email, tier, market: currentMarket });
 }
 
 // ── FAQ ──
